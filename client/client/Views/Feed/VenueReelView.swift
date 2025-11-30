@@ -87,7 +87,12 @@ struct VenueReelView: View {
     // MARK: - Video Player Setup
     private func setupPlayer() {
         // Only setup if we have a video URL
-        guard let videoURL = feedItem.venue.videoURL else { return }
+        guard let videoURL = feedItem.venue.videoURL else {
+            print("⚠️ No video URL for venue: \(feedItem.venue.name)")
+            return
+        }
+        
+        print("🎥 Setting up video player with URL: \(videoURL.absoluteString)")
         
         // Avoid recreating player if already exists
         guard player == nil else {
@@ -95,7 +100,73 @@ struct VenueReelView: View {
             return
         }
         
+        // Create player item with better configuration for HTTP streaming
         let playerItem = AVPlayerItem(url: videoURL)
+        
+        // Enable automatic waiting for network resources
+        playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = false
+        
+        // Observe player item ready to play
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemNewErrorLogEntry,
+            object: playerItem,
+            queue: .main
+        ) { _ in
+            print("📋 Video log entry")
+        }
+        
+        // Observe when item becomes ready
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: playerItem,
+            queue: .main
+        ) { _ in
+            print("✅ Video played to end: \(videoURL.lastPathComponent)")
+        }
+        
+        // Observe failed playback notifications
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemFailedToPlayToEndTime,
+            object: playerItem,
+            queue: .main
+        ) { notification in
+            if let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error {
+                print("❌ Video failed to play to end: \(error.localizedDescription)")
+                if let nsError = error as NSError? {
+                    print("   Error domain: \(nsError.domain), code: \(nsError.code)")
+                }
+            }
+        }
+        
+        // Observe playback stall notifications
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemPlaybackStalled,
+            object: playerItem,
+            queue: .main
+        ) { _ in
+            print("⏸️ Video playback stalled")
+        }
+        
+        // Check status after a short delay to log initial state
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            switch playerItem.status {
+            case .readyToPlay:
+                print("✅ Video ready to play: \(videoURL.lastPathComponent)")
+            case .failed:
+                if let error = playerItem.error {
+                    print("❌ Video playback failed: \(error.localizedDescription)")
+                    if let nsError = error as NSError? {
+                        print("   Error domain: \(nsError.domain), code: \(nsError.code)")
+                        print("   User info: \(nsError.userInfo)")
+                    }
+                }
+            case .unknown:
+                print("⏳ Video status unknown, still loading...")
+            @unknown default:
+                print("⚠️ Unknown video status")
+            }
+        }
+        
         let queuePlayer = AVQueuePlayer(playerItem: playerItem)
         
         // Create Looper for seamless video loop

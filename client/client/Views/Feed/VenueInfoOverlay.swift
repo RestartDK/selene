@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// TODO: Remove the padding here so that we use this correctly
+
 struct VenueInfoOverlay: View {
     let venue: Venue
     @Binding var isSaved: Bool
@@ -71,7 +73,7 @@ struct VenueInfoOverlay: View {
             .layoutPriority(1)
         }
         .padding(.horizontal, 20)
-        .padding(.bottom, 24)
+        .padding(.bottom, 100) // Content padding + space for tab bar
     }
 }
 

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// TODO: Remove the padding here so that we use this correctly
+
 struct InvitedOverlay: View {
     let venue: Venue
     let invitation: Invitation
@@ -73,7 +75,7 @@ struct InvitedOverlay: View {
             }
         }
         .padding(.horizontal, 20)
-        .padding(.bottom, 24)
+        .padding(.bottom, 60) // Content padding + space for tab bar
     }
     
     private var invitedBadge: some View {
