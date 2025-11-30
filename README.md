@@ -1,7 +1,7 @@
 
 # 🌙 Selene
 
-A social nightlife discovery app that connects users to venues through their friends and social connections. Built with SwiftUI (iOS) and Bun (Backend).
+A social venue discovery app that helps users discover new places and make new friends through shared interests and social connections. Built with SwiftUI (iOS) and Bun (Backend).
 
 <div align="center">
   <img src="attachments/Screenshot 2025-11-30 at 13.14.27.png" width="30%" alt="Feed View" />
@@ -28,17 +28,17 @@ A social nightlife discovery app that connects users to venues through their fri
 
 ## Overview
 
-**Selene** is a social nightlife/event app designed to solve the friction in planning nights out. Instead of just discovering venues, users see *who they know* is interested in each place—creating social proof that drives real-world meetups.
+**Selene** is a social venue discovery app designed to help users discover new places and connect with new friends. Instead of just discovering venues alone, users see *who is interested* in each place—creating opportunities for meaningful connections and real-world meetups.
 
 ### The Core Philosophy
 
-> When people go out, they don't just care about the venue itself—they care about WHO they know that went there.
+> When people discover new places, they don't just care about the venue itself, they care about WHO they can meet there and the connections they can make.
 
 ### Goals
 
-- **Connect** users to places (venues) and people (friends/mutuals)
+- **Connect** users to new places (venues) and new people (friends/mutuals)
 - **Show** users a place, show them who else is interested, and help them book it
-- **Get** people to actually go out offline
+- **Foster** real-world connections and meaningful friendships through shared interests
 
 ---
 
