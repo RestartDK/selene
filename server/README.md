@@ -105,6 +105,22 @@ server/
   ```
 
 ### Agent (Selene)
+- `GET /agent/suggestion` - Get proactive booking suggestion with smart reasoning
+  - Query params: `venueId` (required)
+  - Returns:
+    ```json
+    {
+      "venueId": "blue-note",
+      "venueName": "Blue Note Jazz Club",
+      "friendNames": ["Sarah", "Mike"],
+      "friendIds": ["sarah-uuid", "mike-uuid"],
+      "partySize": 3,
+      "suggestedTime": "2024-11-30T21:00:00Z",
+      "reasoning": "You and Sarah both love jazz spots - Blue Note would be perfect for tonight!",
+      "sharedInterests": ["Jazz Club", "Live Music"]
+    }
+    ```
+
 - `POST /agent/chat` - Streaming chat with Selene AI
   ```json
   {
@@ -114,13 +130,31 @@ server/
   ```
   Returns Server-Sent Events (SSE) stream.
 
+#### Agent Tools
+
+The Selene agent has access to two tools for automated actions:
+
+1. **bookTable** - Creates reservations at venues
+   - Parameters: `venueId`, `partySize`, `dateTime`, `guestIds[]`
+   - Returns confirmation code and booking details
+
+2. **sendInvites** - Sends invitations to friends
+   - Parameters: `venueId`, `toUserIds[]`, `proposedTime`
+   - Returns success message and invite count
+
+### Media
+- `GET /media/:filename` - Serve media files (videos and images)
+  - Supports byte-range requests for video streaming
+  - Content types: `video/mp4`, `image/jpeg`, `image/png`
+  - Files located in `src/db/data/media/`
+
 ## Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PORT` | Server port | `3000` |
-| `CURRENT_USER_ID` | Simulated auth user | `alex` |
-| `OPENAI_API_KEY` | OpenAI API key | Required for agent |
+| `CURRENT_USER_ID` | Simulated auth user | `550e8400-e29b-41d4-a716-446655440000` |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI API key | Required for Selene agent |
 
 ## Mock Data
 

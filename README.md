@@ -1,251 +1,413 @@
-# Take home Luna Project
+# 🌙 Selene
 
-## Notes
+A social nightlife discovery app that connects users to venues through their friends and social connections. Built with SwiftUI (iOS) and Bun (Backend).
 
-- Make an app that helps people find places they want to go to based on their friends and people with similar interest
-- Focus on how the user goes about going to a place they like (like getting invited, see a place they like and save it, sees someone else they know go there)
-- Focus on agents, so how it could generate automated reservations, bookings, or purchases once users have agreed to go to a place
-
-You are building a social nightlife/event app. You must stick to the goals outlined in the document:
-
-- The Goal: Connect users to places (venues) and people (friends/mutuals).
-- The Mechanism: Show users a place, show them who else is interested, and help them book it.
-- The Outcome: Get people to actually go out offline.
-
-When people go out they don't just care about the venue itself, but about WHO they know went there as well, otherwise they will feel fomo
-
-How users currently find a place they like:
-
-- Get invited by a friend
-  - Text them for details
-    - Travel to the venue
-- Find a place on social media
-  - Go on google maps or ask chatgpt for reviews
-    - Read through reviews
-      - Click on website and make reservation on website
-        - Travel to venue
-- Friend tells you about a place you like (word of mouth)
-  - Go on google maps or ask chatgpt for reviews
-    - Read through reviews
-      - Click on website and make reservation on website
-        - Travel to venue
-- See a place in person that you really like
-  - Go on google maps or ask chatgpt for reviews
-    - Read through reviews
-      - Click on website and make reservation on website
-        - Travel to venue
-- Searches for restaurants near me on google maps
-  - Go on google maps or ask chatgpt for reviews
-    - Read through reviews
-      - Click on website and make reservation on website
-        - Travel to venue
-
-The main components of this app are:
-
-- You want to see your friends that have gone to similar places, or meet new people that have similar places that you like to go to
-- You want to find new venues to go that you would like
-
-An important part of this app is that you don't want people to go to new venues but form new connections with people of similar interest.
-
-Inviting people seems to be important as well for this app.
-
-> All of these have the goal of generating social connection/attendance of the places and purchases
-
-## User Flow
-
-### Discover and Find New Friends
-
-#### Step 1: Discovery (The Feed)
-
-- **User Action:** User opens the app and sees a "Feed" or "Map" of nearby venues.
-- **System Display:**
-  - Shows reel showing of the company
-  - Show at the top of your discover page the venue were invited to with a UI element that shows you have been invited by someone else
-  - Instead of just showing the venue rating (4.5 stars), it immediately shows faces
-  - UI Element: A "Face Pile" icon showing 3 friends + "5 mutuals" are interested in this spot.
-  - Swipe up and down to interact with this
-- **Decision:** The user stops scrolling because they see familiar faces, not just because the food looks good.
-
-#### Step 2: Validation (The Detail View)
-
-- **User Action:** User taps the venue card to learn more.
-- **System Display:**
-  - **Venue Info:** Name, location, description, whether it's for coffee, dinner, etc
-  - **Social List:** A section explicitly listing: "People you know interested: Sarah, Mike."
-- Interaction: The user taps a generic "Interested" button (saving it for later) OR a "Let's Go" button.
-
-#### Step 3: Action (The AI Agent)
-
-- **User Action:** User taps "Let's Go" or "Reserve."
-- **System Action (The "Wow" Moment):**
-  - Instead of a standard form, a small **"Luna Agent"** overlay appears.
-  - *Agent Message:* "I see Sarah and Mike are also interested. Do you want me to book a table for 3 at 9 PM?".
-- **Resolution:** User taps "Yes." The Agent simulates a booking process and returns a "Confirmed" ticket. b
-
-![[luna-flow.jpeg]]
-
-### See what You Liked before
-
-#### Step 1: Entry (The Profile Tab)
-
-- **Action:** User taps the "Profile" icon in the bottom Tab Bar.
-- **UI:** A clean, modern header with the User's Avatar and Name.
-- **The "Luna" Twist:** Add a "Social Battery" or "Vibe Status" (e.g., "Ready to mingle" vs "Chilling") to give the Agent context.
-
-#### Step 2: The "Vibe List" (Saved Places)
-
-This is the core view. Display the venues the user "Hearted" earlier.
-
-- **Visual:** A grid or vertical list of venue cards.
-- **Crucial UI State:** Don't just show the venue image. Overlay a status chip:
-  - *State A (Quiet):* "Waiting for matches…" (Visual: Pulsing weak signal icon).
-  - *State B (Hot):* "2 Friends Interested" (Visual: Face pile of friends who also liked it).
-  - *State C (Invited):* "Sarah invited you here" (Visual: Envelope icon).
-
-#### Step 3: Converting "Passive" to "Active"
-
-The user sees that a saved place now has friend interest (State B). They decide to stop waiting and act.
-
-- **Action:** User taps the **"Activate"** or **"Plan"** button on the saved card.
-- **System Response (Agent):** The Agent pops up.
-  - *Agent:* "Since you and Sarah both liked **Blue Jazz Bar**, I can book a table for tonight. Want me to send the invite?"
-
-## Full Implementation Plan
-
-### Discover and Find New Friends
-
-#### Step 1: Discovery (The Feed)
-
-**User Action:** User opens the app and sees a "Feed" or "Map" of nearby venues.
-
-**System Display:**
-
-- **Media:** Full-screen vertical video reels showing the atmosphere of the venue
-- **The "Invite" Priority:** The very first card in the deck is a venue where the user has an active invitation
-- **Visual Logic:** Instead of generic star ratings, the primary signal is Social Proof
-- **UI Element:** A "Face Pile" icon showing 3 friends + "5 mutuals" are interested in this spot
-- **Interaction:** Swipe vertical to browse; Tap to expand
-- **Decision Trigger:** "I'm stopping here because Sarah and Mike are going," not just because the food looks good
+![Selene Flow](attachments/luna-flow.jpeg)
 
 ---
 
-#### Step 2: Validation (The Detail View)
+## 📋 Table of Contents
 
-**User Action:** User taps the venue card to learn more.
-
-**System Display:**
-
-- **Venue Info:** Name ("Blue Note Jazz"), Vibe ("Live Music • Late Night"), Location (0.4 mi)
-- **Social List:** A dedicated section explicitly listing: "People you know interested: Sarah, Mike"
-
-**Interaction:**
-
-- **Passive:** Tap "Heart/Interested" (Saves to Profile)
-- **Active:** Tap "Let's Go / Reserve"
-
----
-
-#### Step 3: Action (The AI Agent)
-
-**User Action:** User taps "Let's Go" or "Reserve."
-
-**System Action (The "Wow" Moment):**
-
-A clean Agent Action Sheet slides up (not a chat window).
-
-- **Header:** Luna Agent Logo + "I can secure a spot via OpenTable"
-- **Smart Selections:** A checklist of friends appears:
-  - ☑ Sarah (Pre-selected - High Match)
-  - ☑ Mike (Pre-selected - High Match)
-  - ☐ Search for others...
-- **Primary Action:** A large, glowing button: "Book & Invite"
-- **Resolution:** User taps the button. The sheet shows a "Connecting to Venue..." spinner, then transitions to a "Confirmed! Invites Sent" success state
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+- [Project Structure](#project-structure)
+- [Design Decisions](#design-decisions)
+- [AI Agent Integration](#ai-agent-integration)
+- [Third-Party Resources](#third-party-resources)
+- [Development Process](#development-process)
 
 ---
 
-### See What You Liked Before
+## Overview
 
-#### Step 1: Entry (The Profile Tab)
+**Selene** is a social nightlife/event app designed to solve the friction in planning nights out. Instead of just discovering venues, users see *who they know* is interested in each place—creating social proof that drives real-world meetups.
 
-**Action:** User taps the "Profile" icon.
+### The Core Philosophy
 
-**UI:** User Avatar + Name + Social Battery Status (e.g., "Ready to Mingle" 🔋)
+> When people go out, they don't just care about the venue itself—they care about WHO they know that went there.
 
----
+### Goals
 
-#### Step 2: The "Vibe List" (Saved Places)
-
-**Visual:** A grid of previously "Hearted" venues.
-
-**Dynamic UI States (The "Smart" Layer):**
-
-- **State A (Quiet):** "Waiting for matches..." (Visual: Pulsing radar icon)
-- **State B (Hot):** "2 Friends Interested" (Visual: Face pile of friends)
-- **State C (Invited):** "Sarah invited you here" (Visual: Gold border + Envelope icon)
+- **Connect** users to places (venues) and people (friends/mutuals)
+- **Show** users a place, show them who else is interested, and help them book it
+- **Get** people to actually go out offline
 
 ---
 
-#### Step 3: Converting "Passive" to "Active"
+## Features
 
-**Action:** User taps "Activate" on a "Hot" card.
+### 🎬 Discovery Feed
+- Full-screen vertical video reels showcasing venue atmospheres
+- Social proof via "Face Pile" showing friends interested
+- Invited venues prioritized at the top with gold badges
+- Swipe navigation between venues
 
-**System Response:**
+### 👥 Social Integration
+- See which friends are interested in each venue
+- Receive and accept invitations from friends
+- View mutual connections interested in venues
 
-- The Agent Action Sheet appears with context
-- **Message:** "Sarah matches this vibe. Book for 2?"
-- **Selection:** ☑ Sarah (Pre-selected)
-- **Action:** User taps "Book & Invite"
+### 🤖 Selene AI Agent
+- Smart booking assistant that analyzes social connections
+- Proactive suggestions based on shared interests
+- Automated reservation creation with invite sending
+- Natural language reasoning: *"You and Sarah both love jazz spots—Blue Note would be perfect!"*
 
----
-
-## 2. Content Plan (Mock Data Strategy)
-
-To make the app feel real in the demo, we will hard-code these specific personas and venues.
-
-### A. The Personas (The "Friend Group")
-
-We need specific names and faces to create consistency across the Feed and Profile.
-
-- **Current User (You):** "Alex" (Profile Pic: Memoji or generic cool avatar)
-- **Friend 1:** "Sarah" (The social butterfly who invites you to things)
-- **Friend 2:** "Mike" (The mutual friend who is often "Interested")
-- **Mutuals:** "5 others" (Generic avatars for the face pile)
+### 📋 Profile & Saved Places
+- View saved/hearted venues in a grid layout
+- Dynamic status chips showing friend interest levels
+- Quick access to plan outings from saved venues
 
 ---
 
-### B. The Mock Venues (Data Structure)
+## Architecture
 
-#### Venue 1: The "Invite" Scenario (Priority #1)
+```mermaid
+graph TB
+    subgraph iOS["iOS Client (SwiftUI)"]
+        Feed["Feed View"]
+        Detail["Detail View"]
+        Agent["Agent Sheet"]
+        Profile["Profile View"]
+        
+        Feed --> APIClient
+        Detail --> APIClient
+        Agent --> APIClient
+        Profile --> APIClient
+        
+        APIClient["APIClient<br/>AppState"]
+    end
+    
+    subgraph Server["Bun Server (TypeScript)"]
+        Router["Bun.serve() Router"]
+        
+        Router --> VenuesRoute["Venues Routes"]
+        Router --> SocialRoute["Social Routes"]
+        Router --> InvitesRoute["Invites Routes"]
+        Router --> BookingsRoute["Bookings Routes"]
+        Router --> AgentRoute["Agent Routes"]
+        
+        VenuesRoute --> Services
+        SocialRoute --> Services
+        InvitesRoute --> Services
+        BookingsRoute --> Services
+        AgentRoute --> Services
+        
+        subgraph Services["Services Layer"]
+            FeedBuilder["Feed Builder<br/>(Enrichment)"]
+            SeleneAgent["Selene AI Agent<br/>(Vercel AI SDK + Gemini)"]
+        end
+        
+        Services --> DataStore
+        
+        subgraph DataStore["JSON Data Store"]
+            Users["users.json"]
+            Venues["venues.json"]
+            Interests["interests.json"]
+            Invites["invites.json"]
+            Bookings["bookings.json"]
+        end
+    end
+    
+    APIClient -->|HTTP/SSE| Router
+    
+    style iOS fill:#e1f5ff
+    style Server fill:#fff4e1
+    style Services fill:#f0f0f0
+    style DataStore fill:#e8f5e9
+```
 
-- **Name:** "Blue Note Jazz Club"
-- **Type:** Live Music / Speakeasy
-- **Image Asset:** Dark, moody jazz club with neon lights
-- **Social State:** Invited (Gold Border)
-- **Agent Action:** Agent Sheet shows "Accept Invite" instead of "Book"
+### Data Flow
 
-#### Venue 2: The "Hot" Scenario (Social Proof)
+```mermaid
+sequenceDiagram
+    participant User
+    participant AgentSheet as AgentSheetView
+    participant Backend as Backend API
+    participant Banner as Smart Reasoning Banner
+    participant Booking as Booking Service
+    participant Invite as Invite Service
+    participant Confirm as Confirmation View
+    
+    User->>AgentSheet: Tap "Let's Go"
+    AgentSheet->>Backend: GET /agent/suggestion?venueId=blue-note
+    Note over Backend: Analyzes:<br/>• User's hearted venues<br/>• Friends' interests<br/>• Shared venue types
+    Backend-->>AgentSheet: Returns suggestion with reasoning
+    AgentSheet->>Banner: Display reasoning
+    Banner-->>User: "You and Sarah both love jazz spots!"
+    
+    User->>AgentSheet: Tap "Book & Invite"
+    AgentSheet->>Booking: POST /bookings
+    Booking-->>AgentSheet: Booking created
+    AgentSheet->>Invite: POST /invites
+    Invite-->>AgentSheet: Invites sent
+    
+    AgentSheet->>Confirm: Show confirmation
+    Confirm-->>User: Confirmation code + invite status
+```
 
-- **Name:** "Rooftop 99"
-- **Type:** Cocktail Bar / View
-- **Image Asset:** Sunset view of skyline, people holding drinks
-- **Social State:** High Interest (Face pile of Sarah + Mike)
-- **Agent Action:** Agent Sheet pre-selects Sarah and Mike for a group booking
+---
 
-#### Venue 3: The "Discovery" Scenario (New Place)
+## Prerequisites
 
-- **Name:** "Omen Coffee"
-- **Type:** Cafe / Co-working
-- **Image Asset:** Minimalist coffee shop, latte art
-- **Social State:** None (Shows "Be the first to discover")
-- **Interaction:** User taps "Heart" → Moves to Profile "Vibe List"
+### iOS Client
+- **macOS** 13.0+ (Ventura or later)
+- **Xcode** 15.0+
+- **iOS** 17.0+ deployment target
+- **Swift** 5.9+
 
-## How I did this
+### Backend Server
+- **Bun** 1.0+ (JavaScript/TypeScript runtime)
+- **Google AI API Key** (for Gemini model)
 
-- First made the plans above
-- Then constructed the plans in `.cursor` for implementing the ui and backend
-- Note down all problems in my `.todo` file
+---
 
-## Inspiration
+## Setup Instructions
 
-- <https://mobbin.com/apps/partiful-ios-8d86fde9-d2bf-43ad-9a45-62818f75d1aa/cf9efc2a-4499-484b-861e-bbe8d79873a8/screens>
-- <https://www.lunacommunity.net/>
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd selene
+```
+
+### 2. Backend Setup
+
+```bash
+# Navigate to server directory
+cd server
+
+# Install dependencies
+bun install
+
+# Create environment file
+cp .env.example .env
+
+# Edit .env with your API key
+# GOOGLE_GENERATIVE_AI_API_KEY=your-api-key-here
+# CURRENT_USER_ID=550e8400-e29b-41d4-a716-446655440000
+# PORT=3000
+
+# Start development server
+bun run dev
+```
+
+The server will run at `http://localhost:3000`.
+
+### 3. iOS Client Setup
+
+```bash
+# Navigate to client directory
+cd client
+
+# Open in Xcode
+open client.xcodeproj
+```
+
+In Xcode:
+1. Select your target device/simulator (iOS 17.0+)
+2. Update the API base URL in `APIClient.swift` if needed
+3. Build and run (⌘+R)
+
+### 4. Verify Setup
+
+```bash
+# Test backend health
+curl http://localhost:3000/health
+
+# Expected response:
+# {"status":"ok","timestamp":"..."}
+```
+
+---
+
+## Project Structure
+
+```
+selene/
+├── client/                          # iOS SwiftUI Application
+│   └── client/
+│       ├── Models/                  # Data models
+│       │   ├── User.swift
+│       │   ├── Venue.swift
+│       │   └── Invitation.swift
+│       ├── Views/                   # UI components
+│       │   ├── Feed/                # Discovery feed
+│       │   │   ├── FeedView.swift
+│       │   │   ├── VenueReelView.swift
+│       │   │   └── FacePileView.swift
+│       │   ├── Detail/              # Venue details
+│       │   │   └── VenueDetailView.swift
+│       │   ├── Agent/               # AI booking agent
+│       │   │   ├── AgentSheetView.swift
+│       │   │   ├── InviteAcceptanceView.swift
+│       │   │   └── BookingConfirmationView.swift
+│       │   └── Profile/             # User profile
+│       │       └── ProfileView.swift
+│       ├── Services/                # API & state management
+│       │   ├── APIClient.swift
+│       │   └── AppState.swift
+│       └── Theme/                   # Design system
+│           ├── Colors.swift
+│           └── Typography.swift
+│
+├── server/                          # Bun TypeScript Backend
+│   ├── src/
+│   │   ├── index.ts                 # Bun.serve() entry point
+│   │   ├── routes/                  # API route handlers
+│   │   │   ├── venues.ts
+│   │   │   ├── social.ts
+│   │   │   ├── invites.ts
+│   │   │   ├── bookings.ts
+│   │   │   └── agent.ts
+│   │   ├── services/                # Business logic
+│   │   │   ├── agent.ts             # Selene AI agent
+│   │   │   └── feed-builder.ts      # Social enrichment
+│   │   ├── db/                      # Data layer
+│   │   │   ├── index.ts             # JSON utilities
+│   │   │   └── data/                # JSON data files
+│   │   └── types/                   # TypeScript types
+│   └── package.json
+│
+├── attachments/                     # Reference materials
+└── .cursor/plans/                   # Implementation plans
+```
+
+---
+
+## Design Decisions
+
+### 1. Full-Bleed Video Feed
+
+**Decision:** Use TikTok-style vertical video reels instead of static cards.
+
+**Rationale:** 
+- Creates immersive venue preview experience
+- Differentiates from traditional listing apps
+- Video conveys atmosphere better than photos
+
+**Implementation:** Custom `CustomVideoPlayer` using AVPlayer with range request support for streaming.
+
+### 2. Social Proof First
+
+**Decision:** Display friend avatars ("Face Pile") as the primary call-to-action, not star ratings.
+
+**Rationale:**
+- Users decide based on WHO is going, not ratings
+- Creates FOMO and social motivation
+- Aligns with app's core value proposition
+
+### 3. Agent Sheet vs Chat
+
+**Decision:** Use a structured action sheet instead of freeform chat for bookings.
+
+**Rationale:**
+- Faster for simple booking flows
+- Reduces cognitive load
+- Still provides smart suggestions
+- Chat available for complex queries
+
+### 4. Bun Native Server
+
+**Decision:** Use Bun's native `Bun.serve()` instead of Express/Hono.
+
+**Rationale:**
+- Zero dependencies for HTTP routing
+- Better performance
+- Simpler codebase
+- Native TypeScript support
+
+### 5. JSON File Storage
+
+**Decision:** Use JSON files instead of a database.
+
+**Rationale:**
+- Demo/prototype focused
+- Easy to inspect and modify data
+- No database setup required
+- Sufficient for 3-user demo scenario
+
+---
+
+## AI Agent Integration
+
+The Selene AI Agent is powered by **Google Gemini** (via Vercel AI SDK) and provides smart booking suggestions and streaming chat **capabilities**. The agent analyzes social connections and shared interests to provide personalized recommendations.
+
+For detailed API documentation, see [server/README.md](server/README.md#agent-selene).
+
+### AI Usage in Development
+
+Cursor AI (Claude) was used extensively as a coding agent throughout development:
+
+| Area | AI Usage |
+|------|----------|
+| **Architecture Planning** | Generated implementation plans in `.cursor/plans/` |
+| **SwiftUI Views** | Scaffolded view structures and layouts |
+| **API Client** | Generated HTTP client with async/await patterns |
+| **Type Definitions** | Created TypeScript and Swift type definitions |
+| **Video Player** | Implemented AVPlayer integration for reel playback |
+| **Bug Fixes** | Debugged video streaming and CORS issues |
+
+---
+
+## Third-Party Resources
+
+### Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| **Vercel AI SDK** | ^5.0.104 | LLM streaming and tool calling |
+| **@ai-sdk/google** | ^2.0.44 | Google Gemini integration |
+| **zod** | ^3.25.67 | Schema validation for agent tools |
+
+### Design Inspiration
+
+- [Partiful iOS](https://mobbin.com/apps/partiful-ios-8d86fde9-d2bf-43ad-9a45-62818f75d1aa/) - Event invitation UX patterns
+- [Luna Community](https://www.lunacommunity.net/) - Social discovery concepts
+
+### Media Assets
+
+- Video assets from [Pexels](https://www.pexels.com/) (free stock videos)
+- Avatar images are placeholder assets for demo purposes
+
+---
+
+## Development Process
+
+### Planning Phase
+
+1. **Requirements Analysis** - Parsed assignment document to identify core features
+2. **User Flow Mapping** - Documented discovery → validation → action flow
+3. **Mock Data Strategy** - Defined personas (Alex, Sarah, Mike) and venues
+
+### Implementation Plans
+
+Development was guided by structured plans in `.cursor/plans/`:
+
+| Plan | Description |
+|------|-------------|
+| `swiftui-ui-draft` | Complete UI wireframes and component hierarchy |
+| `selene-backend-implementation` | API design and data layer architecture |
+| `proactive-agent-suggestions` | Smart reasoning feature specification |
+| `invite-acceptance-flow` | Invitation UX implementation |
+
+### Key Challenges & Solutions
+
+| Challenge | Solution |
+|-----------|----------|
+| Video streaming on iOS | Implemented byte-range request handling on backend |
+| Real-time social state | Created feed-builder service for data enrichment |
+| Agent context awareness | Built context injection with venue and friend data |
+| Invite flow differentiation | Created separate `InviteAcceptanceView` for acceptances |
+
+---
+
+## Documentation
+
+For detailed documentation on specific components:
+
+- **[Backend API Documentation](server/README.md)** - Complete API reference, endpoints, and server setup
+- **[iOS Client Documentation](client/README.md)** - SwiftUI architecture, components, and client setup
