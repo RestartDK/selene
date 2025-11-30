@@ -17,28 +17,28 @@ When people go out they don't just care about the venue itself, but about WHO th
 How users currently find a place they like:
 
 - Get invited by a friend
- 	- Text them for details
-  		- Travel to the venue
+  - Text them for details
+    - Travel to the venue
 - Find a place on social media
- 	- Go on google maps or ask chatgpt for reviews
-  		- Read through reviews
-   			- Click on website and make reservation on website
-    				- Travel to venue
+  - Go on google maps or ask chatgpt for reviews
+    - Read through reviews
+      - Click on website and make reservation on website
+        - Travel to venue
 - Friend tells you about a place you like (word of mouth)
- 	- Go on google maps or ask chatgpt for reviews
-  		- Read through reviews
-   			- Click on website and make reservation on website
-    				- Travel to venue
+  - Go on google maps or ask chatgpt for reviews
+    - Read through reviews
+      - Click on website and make reservation on website
+        - Travel to venue
 - See a place in person that you really like
- 	- Go on google maps or ask chatgpt for reviews
-  		- Read through reviews
-   			- Click on website and make reservation on website
-    				- Travel to venue
+  - Go on google maps or ask chatgpt for reviews
+    - Read through reviews
+      - Click on website and make reservation on website
+        - Travel to venue
 - Searches for restaurants near me on google maps
- 	- Go on google maps or ask chatgpt for reviews
-  		- Read through reviews
-   			- Click on website and make reservation on website
-    				- Travel to venue
+  - Go on google maps or ask chatgpt for reviews
+    - Read through reviews
+      - Click on website and make reservation on website
+        - Travel to venue
 
 The main components of this app are:
 
