@@ -2,23 +2,18 @@
 //  ContentView.swift
 //  client
 //
-//  Created by Daniel Kumlin on 29/11/2025.
+//  Selene App - Content View (Legacy - redirects to MainTabView)
 //
 
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        MainTabView()
     }
 }
 
 #Preview {
     ContentView()
+        .preferredColorScheme(.dark)
 }

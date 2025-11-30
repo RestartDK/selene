@@ -2,16 +2,35 @@
 //  clientApp.swift
 //  client
 //
-//  Created by Daniel Kumlin on 29/11/2025.
+//  Selene App - Entry Point
 //
 
 import SwiftUI
 
 @main
-struct clientApp: App {
+struct SeleneApp: App {
+    @StateObject private var appState = AppState.shared
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
+                .environmentObject(appState)
+                .preferredColorScheme(.dark)
+                .onAppear {
+                    // Initialize app state when app launches
+                    Task {
+                        await appState.initialize()
+                    }
+                }
+                .alert("Error", isPresented: $appState.showError) {
+                    Button("OK") {
+                        appState.clearError()
+                    }
+                } message: {
+                    if let error = appState.lastError {
+                        Text(error.localizedDescription)
+                    }
+                }
         }
     }
 }
