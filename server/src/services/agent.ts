@@ -262,8 +262,7 @@ export async function streamLunaChat(request: AgentChatRequest) {
         execute: executeSendInvites,
       },
     },
-    // @ts-expect-error - maxSteps is supported but types may be out of sync
-    maxSteps: 5, // Allow multiple tool calls if needed
+    maxRetries: 5, 
   });
 
   return result;
