@@ -322,13 +322,7 @@ TabView
 
 ## Design Tokens
 
-**Colors:**
-
-- Primary: Deep purple (#6B4EE6)
-- Accent Gold: (#FFD700) for invites/accept
-- Hot Orange: (#FF6B35) for high interest
-- Background: Near-black (#0D0D0D)
-- Overlay Gradient: Clear -> Black 70% (bottom scrim)
+**U**se semantic tokens from swift ui
 
 ---
 

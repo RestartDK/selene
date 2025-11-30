@@ -16,7 +16,7 @@ server/
 │   │   ├── bookings.ts       # Mock booking service
 │   │   └── agent.ts          # Luna AI agent streaming
 │   ├── services/
-│   │   ├── luna-agent.ts     # Vercel AI SDK integration
+│   │   ├── agent.ts          # Vercel AI SDK integration (Luna)
 │   │   └── feed-builder.ts   # Feed with social state enrichment
 │   ├── db/
 │   │   ├── index.ts          # JSON loader/saver utilities
