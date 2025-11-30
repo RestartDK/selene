@@ -25,5 +25,19 @@
     "status": "confirmed",
     "confirmationCode": "97TBE2",
     "createdAt": "2025-11-30T19:09:18.722Z"
+  },
+  {
+    "id": "faKFkdHeFajztIcfcWTpS",
+    "venueId": "blue-note",
+    "userId": "550e8400-e29b-41d4-a716-446655440000",
+    "guests": [
+      "sarah",
+      "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+    ],
+    "partySize": 2,
+    "dateTime": "2025-12-01T04:00:00Z",
+    "status": "confirmed",
+    "confirmationCode": "ED3LFY",
+    "createdAt": "2025-11-30T19:54:03.721Z"
   }
 ]

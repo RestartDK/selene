@@ -11,12 +11,12 @@
       "lat": 40.7308,
       "lng": -74.0007
     },
-    "mediaUrl": "8004614-hd_1080_1920_30fps.mp4",
+    "mediaUrl": "4752324-hd_1066_1920_25fps.mp4",
     "thumbnailUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=585&h=1266&fit=crop&crop=center&auto=format"
   },
   {
     "id": "rooftop-99",
-    "name": "Rooftop 99",
+    "name": "Green Leaf Health Restaurant",
     "type": "Rooftop Bar",
     "vibe": "Vibrant & Scenic",
     "description": "Stunning panoramic views of the city skyline from 40 floors up. Craft cocktails, small plates, and a chic crowd make this the hottest sunset spot in town.",
@@ -26,7 +26,7 @@
       "lat": 40.7527,
       "lng": -73.9772
     },
-    "mediaUrl": "8004614-hd_1080_1920_30fps.mp4",
+    "mediaUrl": "4884030-hd_1080_1920_30fps.mp4",
     "thumbnailUrl": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=585&h=1266&fit=crop&crop=center&auto=format"
   },
   {
@@ -41,7 +41,22 @@
       "lat": 40.7245,
       "lng": -74.0035
     },
-    "mediaUrl": "8004614-hd_1080_1920_30fps.mp4",
+    "mediaUrl": "5989753-uhd_2160_3840_25fps.mp4",
     "thumbnailUrl": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=585&h=1266&fit=crop&crop=center&auto=format"
+  },
+  {
+    "id": "midnight-speakeasy",
+    "name": "MetLife Stadium",
+    "type": "Football Stadium",
+    "vibe": "Electric & Energetic",
+    "description": "Home of the New York Giants and Jets. This massive 82,500-seat stadium hosts thrilling NFL games, concerts, and major events. Experience the roar of the crowd, tailgate culture, and the ultimate American football atmosphere.",
+    "location": {
+      "address": "1 MetLife Stadium Dr, East Rutherford",
+      "distance": "8.5 mi",
+      "lat": 40.8135,
+      "lng": -74.0745
+    },
+    "mediaUrl": "14808321_1080_1920_30fps.mp4",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1551958219-acbc608c6377?w=585&h=1266&fit=crop&crop=center&auto=format"
   }
 ]
