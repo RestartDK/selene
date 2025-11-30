@@ -2,7 +2,7 @@ import { getVenues, getVenueById, heartVenue, unheartVenue } from "./routes/venu
 import { getInterestedFriends, getFriends, getCurrentUser } from "./routes/social";
 import { getInvites, createInvite, updateInvite } from "./routes/invites";
 import { getBookings, createBooking } from "./routes/bookings";
-import { agentChat } from "./routes/agent";
+import { agentChat, getSuggestion } from "./routes/agent";
 import { handlePreflight, errorResponse, corsHeaders } from "./utils/cors";
 
 const PORT = process.env.PORT || 3000;
@@ -169,6 +169,14 @@ async function handleRequest(req: Request): Promise<Response> {
     }
 
     // ===== AGENT ROUTES =====
+
+    // GET /agent/suggestion - Get proactive booking suggestion
+    if (method === "GET" && path === "/agent/suggestion") {
+      console.log(`[${timestamp}] Handling GET /agent/suggestion`);
+      const response = await getSuggestion(req);
+      console.log(`[${timestamp}] GET /agent/suggestion - Status: ${response.status}`);
+      return response;
+    }
 
     // POST /agent/chat - Chat with Luna
     if (method === "POST" && path === "/agent/chat") {

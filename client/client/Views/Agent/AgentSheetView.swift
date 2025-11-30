@@ -22,6 +22,7 @@ struct AgentSheetView: View {
     @State private var showConfirmation: Bool = false
     @State private var confirmedBooking: Booking?
     @State private var isLoading: Bool = false
+    @State private var agentSuggestion: APIAgentSuggestion?
     
     // Interested friends (pre-selected)
     private var interestedFriends: [User] {
@@ -88,6 +89,20 @@ struct AgentSheetView: View {
             if let tonight = Calendar.current.date(from: components) {
                 selectedDate = tonight
             }
+            
+            // Fetch agent suggestion for smart reasoning
+            Task {
+                if let suggestion = try? await APIClient.shared.getAgentSuggestion(venueId: apiVenueId) {
+                    agentSuggestion = suggestion
+                    // Pre-select suggested friends (by their IDs)
+                    for friendId in suggestion.friendIds {
+                        selectedFriends.insert(friendId)
+                        if !selectedFriendApiIds.contains(friendId) {
+                            selectedFriendApiIds.append(friendId)
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -97,6 +112,11 @@ struct AgentSheetView: View {
             VStack(spacing: 24) {
                 // Agent header
                 agentHeader
+                
+                // Smart reasoning banner from Luna
+                if let suggestion = agentSuggestion {
+                    reasoningBanner(suggestion: suggestion)
+                }
                 
                 // Friend selection
                 FriendSelectionList(
@@ -152,6 +172,25 @@ struct AgentSheetView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
+    }
+    
+    // MARK: - Reasoning Banner
+    private func reasoningBanner(suggestion: APIAgentSuggestion) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .foregroundStyle(SeleneTheme.moonGlow)
+                Text("Luna")
+                    .font(.seleneCaption)
+                    .foregroundStyle(.secondary)
+            }
+            Text(suggestion.reasoning)
+                .font(.seleneBody)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(SeleneTheme.moonGlow.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
     // MARK: - Date/Time Picker

@@ -208,6 +208,12 @@ class APIClient: ObservableObject {
         let response: CreateBookingResponse = try await self.request(endpoint: "/bookings", method: "POST", body: body)
         return response.booking
     }
+    
+    // MARK: - Agent Endpoints
+    
+    func getAgentSuggestion(venueId: String) async throws -> APIAgentSuggestion? {
+        try await request(endpoint: "/agent/suggestion?venueId=\(venueId)")
+    }
 }
 
 // MARK: - Model Converters

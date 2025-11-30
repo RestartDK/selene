@@ -14,6 +14,30 @@ import {
 import { buildEnrichedFeed } from "./feed-builder";
 import { nanoid } from "../utils/nanoid";
 
+/**
+ * Resolve a user identifier (UUID or name) to the actual UUID from users.json
+ */
+async function resolveUserId(userIdOrName: string): Promise<string | null> {
+  const users = await loadUsers();
+  
+  // First try to find by UUID
+  const userById = users.find((u) => u.id === userIdOrName);
+  if (userById) {
+    return userById.id;
+  }
+  
+  // If not found, try to find by name (case-insensitive)
+  const userByName = users.find(
+    (u) => u.name.toLowerCase() === userIdOrName.toLowerCase()
+  );
+  if (userByName) {
+    return userByName.id;
+  }
+  
+  // User not found
+  return null;
+}
+
 // Initialize Google Generative AI client
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
@@ -169,9 +193,13 @@ async function executeSendInvites({
 
   const newInvites: Invite[] = [];
 
-  for (const toUserId of toUserIds) {
-    const friend = users.find((u) => u.id === toUserId);
-    if (!friend) continue;
+  for (const userIdOrName of toUserIds) {
+    // Resolve to actual UUID from users.json
+    const toUserId = await resolveUserId(userIdOrName);
+    if (!toUserId) {
+      // Skip if user not found
+      continue;
+    }
 
     // Check for existing pending invite
     const existingInvite = invites.find(
@@ -188,7 +216,7 @@ async function executeSendInvites({
       id: nanoid(),
       venueId,
       fromUserId: currentUserId,
-      toUserId,
+      toUserId, // Always use the UUID from users.json
       status: "pending",
       proposedTime,
       createdAt: new Date().toISOString(),

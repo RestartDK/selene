@@ -153,6 +153,18 @@ struct AgentChatRequest: Codable {
     let conversationHistory: [AgentChatMessage]?
 }
 
+// MARK: - Agent Suggestion Types
+struct APIAgentSuggestion: Codable {
+    let venueId: String
+    let venueName: String
+    let friendNames: [String]
+    let friendIds: [String]
+    let partySize: Int
+    let suggestedTime: String
+    let reasoning: String
+    let sharedInterests: [String]?
+}
+
 // MARK: - Health Check
 struct HealthCheckResponse: Codable {
     let status: String
