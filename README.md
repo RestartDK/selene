@@ -1,8 +1,13 @@
+
 # 🌙 Selene
 
 A social nightlife discovery app that connects users to venues through their friends and social connections. Built with SwiftUI (iOS) and Bun (Backend).
 
-![Selene Flow](attachments/luna-flow.jpeg)
+<div align="center">
+  <img src="attachments/Screenshot 2025-11-30 at 13.14.27.png" width="30%" alt="Feed View" />
+  <img src="attachments/Screenshot 2025-11-30 at 13.16.10.png" width="30%" alt="Agent Booking View" />
+  <img src="attachments/Screenshot 2025-11-30 at 13.18.07.png" width="30%" alt="Booking Confirmation" />
+</div>
 
 ---
 
@@ -40,23 +45,27 @@ A social nightlife discovery app that connects users to venues through their fri
 ## Features
 
 ### 🎬 Discovery Feed
+
 - Full-screen vertical video reels showcasing venue atmospheres
 - Social proof via "Face Pile" showing friends interested
 - Invited venues prioritized at the top with gold badges
 - Swipe navigation between venues
 
 ### 👥 Social Integration
+
 - See which friends are interested in each venue
 - Receive and accept invitations from friends
 - View mutual connections interested in venues
 
 ### 🤖 Selene AI Agent
+
 - Smart booking assistant that analyzes social connections
 - Proactive suggestions based on shared interests
 - Automated reservation creation with invite sending
 - Natural language reasoning: *"You and Sarah both love jazz spots—Blue Note would be perfect!"*
 
 ### 📋 Profile & Saved Places
+
 - View saved/hearted venues in a grid layout
 - Dynamic status chips showing friend interest levels
 - Quick access to plan outings from saved venues
@@ -154,12 +163,14 @@ sequenceDiagram
 ## Prerequisites
 
 ### iOS Client
+
 - **macOS** 13.0+ (Ventura or later)
 - **Xcode** 15.0+
 - **iOS** 17.0+ deployment target
 - **Swift** 5.9+
 
 ### Backend Server
+
 - **Bun** 1.0+ (JavaScript/TypeScript runtime)
 - **Google AI API Key** (for Gemini model)
 
@@ -208,6 +219,7 @@ open client.xcodeproj
 ```
 
 In Xcode:
+
 1. Select your target device/simulator (iOS 17.0+)
 2. Update the API base URL in `APIClient.swift` if needed
 3. Build and run (⌘+R)
@@ -284,7 +296,8 @@ selene/
 
 **Decision:** Use TikTok-style vertical video reels instead of static cards.
 
-**Rationale:** 
+**Rationale:**
+
 - Creates immersive venue preview experience
 - Differentiates from traditional listing apps
 - Video conveys atmosphere better than photos
@@ -296,6 +309,7 @@ selene/
 **Decision:** Display friend avatars ("Face Pile") as the primary call-to-action, not star ratings.
 
 **Rationale:**
+
 - Users decide based on WHO is going, not ratings
 - Creates FOMO and social motivation
 - Aligns with app's core value proposition
@@ -305,6 +319,7 @@ selene/
 **Decision:** Use a structured action sheet instead of freeform chat for bookings.
 
 **Rationale:**
+
 - Faster for simple booking flows
 - Reduces cognitive load
 - Still provides smart suggestions
@@ -315,6 +330,7 @@ selene/
 **Decision:** Use Bun's native `Bun.serve()` instead of Express/Hono.
 
 **Rationale:**
+
 - Zero dependencies for HTTP routing
 - Better performance
 - Simpler codebase
@@ -325,6 +341,7 @@ selene/
 **Decision:** Use JSON files instead of a database.
 
 **Rationale:**
+
 - Demo/prototype focused
 - Easy to inspect and modify data
 - No database setup required
@@ -385,12 +402,13 @@ The development process began with hands-on design exploration:
    - Feed view with video reels and social overlays
    - Agent booking sheet interactions
    - Profile and saved places layouts
-   
+
    ![UI Sketch 1](attachments/IMG_3061.jpeg)
    ![UI Sketch 2](attachments/IMG_3064.jpeg)
 
 2. **Requirements Analysis** - Parsed assignment document to identify core features
 3. **User Flow Mapping** - Documented discovery → validation → action flow
+![Selene Flow](attachments/luna-flow.jpeg)
 4. **Mock Data Strategy** - Defined personas (Alex, Sarah, Mike) and venues
 
 ### Implementation Plans
