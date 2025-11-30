@@ -1,8 +1,12 @@
 {
-  "name": "server",
-  "module": "index.ts",
+  "name": "selene-server",
+  "module": "src/index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -10,8 +14,9 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.44",
+    "@ai-sdk/openai": "^2.0.74",
     "ai": "^5.0.104",
-    "dotenv": "^17.2.3",
-    "zod": "^4.1.13"
+    "zod": "^3.25.67"
   }
 }

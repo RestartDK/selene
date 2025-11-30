@@ -1,15 +1,131 @@
-# server
+# Selene Backend API
 
-To install dependencies:
+A Bun-native HTTP server for the Selene nightlife discovery app.
+
+## Quick Start
 
 ```bash
+# Install dependencies
 bun install
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your OPENAI_API_KEY
+
+# Run development server
+bun run dev
+
+# Or production
+bun run start
 ```
 
-To run:
+The server runs on `http://localhost:3000` by default (configurable via `PORT` env var).
 
-```bash
-bun run index.ts
+## Architecture
+
+Built using **Bun's native `Bun.serve()`** HTTP server with:
+- Zero external frameworks (no Hono, Express, etc.)
+- JSON file-based data storage with caching
+- Vercel AI SDK for Luna agent streaming
+- CORS enabled for iOS client
+
+## Project Structure
+
+```
+server/
+├── src/
+│   ├── index.ts              # Bun.serve entry point & routing
+│   ├── routes/
+│   │   ├── venues.ts         # Venue endpoints
+│   │   ├── social.ts         # Friend/interest queries
+│   │   ├── invites.ts        # Invite management
+│   │   ├── bookings.ts       # Mock booking service
+│   │   └── agent.ts          # Luna AI agent streaming
+│   ├── services/
+│   │   ├── luna-agent.ts     # Vercel AI SDK integration
+│   │   └── feed-builder.ts   # Feed with social state enrichment
+│   ├── db/
+│   │   ├── index.ts          # JSON loader/saver utilities
+│   │   └── data/             # JSON data files
+│   │       ├── users.json
+│   │       ├── venues.json
+│   │       ├── interests.json
+│   │       ├── invites.json
+│   │       └── bookings.json
+│   ├── types/
+│   │   └── index.ts          # Shared TypeScript types
+│   └── utils/
+│       ├── cors.ts           # CORS headers helper
+│       └── nanoid.ts         # ID generator
+├── package.json
+└── tsconfig.json
 ```
 
-This project was created using `bun init` in bun v1.3.1. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## API Endpoints
+
+### Health Check
+- `GET /health` - Server status
+
+### Venues
+- `GET /venues` - List all venues (enriched with social state)
+- `GET /venues/:id` - Get single venue details
+- `POST /venues/:id/heart` - Mark venue as interested
+- `DELETE /venues/:id/heart` - Remove interest
+
+### Social
+- `GET /social/friends` - Get current user's friend list
+- `GET /social/interested/:venueId` - Get friends interested in venue
+- `GET /users/me` - Get current user profile
+
+### Invites
+- `GET /invites` - Get user's invites (sent and received)
+- `POST /invites` - Create invite(s)
+  ```json
+  {
+    "venueId": "blue-note",
+    "toUserIds": ["sarah", "mike"],
+    "proposedTime": "2024-01-20T20:00:00Z"
+  }
+  ```
+- `PATCH /invites/:id` - Accept/decline invite
+  ```json
+  { "status": "accepted" }
+  ```
+
+### Bookings
+- `GET /bookings` - Get user's bookings
+- `POST /bookings` - Create mock booking
+  ```json
+  {
+    "venueId": "rooftop-99",
+    "partySize": 4,
+    "dateTime": "2024-01-20T21:00:00Z",
+    "guestIds": ["sarah"]
+  }
+  ```
+
+### Agent (Luna)
+- `POST /agent/chat` - Streaming chat with Luna AI
+  ```json
+  {
+    "message": "Find me a jazz spot for tonight",
+    "conversationHistory": []
+  }
+  ```
+  Returns Server-Sent Events (SSE) stream.
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `3000` |
+| `CURRENT_USER_ID` | Simulated auth user | `alex` |
+| `OPENAI_API_KEY` | OpenAI API key | Required for agent |
+
+## Mock Data
+
+Pre-seeded with:
+- **3 Users**: Alex, Sarah, Mike (mutual friends)
+- **3 Venues**: Blue Note Jazz Club, Rooftop 99, Omen Coffee
+- **Interests**: Sarah & Mike interested in Blue Note and Rooftop
+- **Invites**: Pending invite from Sarah to Alex for Blue Note

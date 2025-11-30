@@ -1,0 +1,24 @@
+[
+  {
+    "id": "alex",
+    "name": "Alex",
+    "avatarUrl": "/avatars/alex.png",
+    "vibeStatus": "ready_to_mingle",
+    "friends": ["sarah", "mike"]
+  },
+  {
+    "id": "sarah",
+    "name": "Sarah",
+    "avatarUrl": "/avatars/sarah.png",
+    "vibeStatus": "exploring",
+    "friends": ["alex", "mike"]
+  },
+  {
+    "id": "mike",
+    "name": "Mike",
+    "avatarUrl": "/avatars/mike.png",
+    "vibeStatus": "chilling",
+    "friends": ["alex", "sarah"]
+  }
+]
+

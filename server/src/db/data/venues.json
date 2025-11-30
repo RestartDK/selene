@@ -1,0 +1,48 @@
+[
+  {
+    "id": "blue-note",
+    "name": "Blue Note Jazz Club",
+    "type": "Jazz Club",
+    "vibe": "Intimate & Soulful",
+    "description": "Legendary jazz venue featuring world-class musicians in an intimate setting. Dark wood interiors, candlelit tables, and the finest cocktails accompany nightly live performances.",
+    "location": {
+      "address": "131 W 3rd St, Greenwich Village",
+      "distance": "0.8 mi",
+      "lat": 40.7308,
+      "lng": -74.0007
+    },
+    "mediaUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400"
+  },
+  {
+    "id": "rooftop-99",
+    "name": "Rooftop 99",
+    "type": "Rooftop Bar",
+    "vibe": "Vibrant & Scenic",
+    "description": "Stunning panoramic views of the city skyline from 40 floors up. Craft cocktails, small plates, and a chic crowd make this the hottest sunset spot in town.",
+    "location": {
+      "address": "99 Park Ave, Midtown",
+      "distance": "1.2 mi",
+      "lat": 40.7527,
+      "lng": -73.9772
+    },
+    "mediaUrl": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400"
+  },
+  {
+    "id": "omen-coffee",
+    "name": "Omen Coffee",
+    "type": "Coffee Shop",
+    "vibe": "Minimalist & Cozy",
+    "description": "A serene escape from the city bustle. Japanese-inspired minimalist design, single-origin pour-overs, and house-made matcha treats. Perfect for focused work or quiet conversations.",
+    "location": {
+      "address": "15 Thompson St, SoHo",
+      "distance": "0.5 mi",
+      "lat": 40.7245,
+      "lng": -74.0035
+    },
+    "mediaUrl": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400"
+  }
+]
+
