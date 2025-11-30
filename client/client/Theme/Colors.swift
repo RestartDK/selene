@@ -114,7 +114,7 @@ struct SeleneTheme {
     static let nightSky = Color(red: 0.08, green: 0.08, blue: 0.15)
     static let twilight = Color(red: 0.15, green: 0.12, blue: 0.25)
     static let starlight = Color(red: 0.95, green: 0.95, blue: 1.0)
-    static let lunar = Color(red: 0.70, green: 0.75, blue: 0.85)
+    static let selene = Color(red: 0.70, green: 0.75, blue: 0.85)
     
     // Action colors
     static let accept = Color(red: 0.95, green: 0.75, blue: 0.20) // Gold

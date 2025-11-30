@@ -26,7 +26,7 @@ The server runs on `http://localhost:3000` by default (configurable via `PORT` e
 Built using **Bun's native `Bun.serve()`** HTTP server with:
 - Zero external frameworks (no Hono, Express, etc.)
 - JSON file-based data storage with caching
-- Vercel AI SDK for Luna agent streaming
+- Vercel AI SDK for Selene agent streaming
 - CORS enabled for iOS client
 
 ## Project Structure
@@ -40,9 +40,9 @@ server/
 │   │   ├── social.ts         # Friend/interest queries
 │   │   ├── invites.ts        # Invite management
 │   │   ├── bookings.ts       # Mock booking service
-│   │   └── agent.ts          # Luna AI agent streaming
+│   │   └── agent.ts          # Selene AI agent streaming
 │   ├── services/
-│   │   ├── luna-agent.ts     # Vercel AI SDK integration
+│   │   ├── selene-agent.ts     # Vercel AI SDK integration
 │   │   └── feed-builder.ts   # Feed with social state enrichment
 │   ├── db/
 │   │   ├── index.ts          # JSON loader/saver utilities
@@ -104,8 +104,8 @@ server/
   }
   ```
 
-### Agent (Luna)
-- `POST /agent/chat` - Streaming chat with Luna AI
+### Agent (Selene)
+- `POST /agent/chat` - Streaming chat with Selene AI
   ```json
   {
     "message": "Find me a jazz spot for tonight",

@@ -1,11 +1,11 @@
 import type { AgentChatRequest, User, EnrichedVenue } from "../types";
-import { streamLunaChat } from "../services/agent";
+import { streamSeleneChat } from "../services/agent";
 import { errorResponse, corsHeaders, jsonResponse } from "../utils/cors";
 import { getEnrichedVenue } from "../services/feed-builder";
 import { loadInterests, loadVenues, loadUsers, getCurrentUserId } from "../db";
 
 /**
- * POST /agent/chat - Streaming chat with Luna agent
+ * POST /agent/chat - Streaming chat with Selene agent
  * Returns Server-Sent Events (SSE) stream
  */
 // MARK: - Agent Suggestion Response Type
@@ -148,7 +148,7 @@ export async function getSuggestion(req: Request): Promise<Response> {
 }
 
 /**
- * POST /agent/chat - Streaming chat with Luna agent
+ * POST /agent/chat - Streaming chat with Selene agent
  * Returns Server-Sent Events (SSE) stream
  */
 export async function agentChat(req: Request): Promise<Response> {
@@ -159,7 +159,7 @@ export async function agentChat(req: Request): Promise<Response> {
       return errorResponse("Missing required field: message", 400);
     }
 
-    const result = await streamLunaChat(body);
+    const result = await streamSeleneChat(body);
 
     // Create SSE stream
     const stream = new ReadableStream({

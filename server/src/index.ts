@@ -178,7 +178,7 @@ async function handleRequest(req: Request): Promise<Response> {
       return response;
     }
 
-    // POST /agent/chat - Chat with Luna
+    // POST /agent/chat - Chat with Selene
     if (method === "POST" && path === "/agent/chat") {
       console.log(`[${timestamp}] Handling POST /agent/chat`);
       const response = await agentChat(req);

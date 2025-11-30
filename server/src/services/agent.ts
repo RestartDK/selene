@@ -56,9 +56,9 @@ function generateConfirmationCode(): string {
 }
 
 /**
- * Luna's system prompt - friendly nightlife concierge persona
+ * Selene's system prompt - friendly nightlife concierge persona
  */
-const LUNA_SYSTEM_PROMPT = `You are Luna, a friendly and knowledgeable nightlife concierge AI assistant. You help users discover and plan nights out with their friends.
+const SELENE_SYSTEM_PROMPT = `You are Selene, a friendly and knowledgeable nightlife concierge AI assistant. You help users discover and plan nights out with their friends.
 
 Your personality:
 - Warm, enthusiastic, and helpful
@@ -81,9 +81,9 @@ When helping users:
 Always be helpful and make the planning process fun!`;
 
 /**
- * Build context about venues and user's friends for Luna
+ * Build context about venues and user's friends for Selene
  */
-async function buildLunaContext(): Promise<string> {
+async function buildSeleneContext(): Promise<string> {
   const [enrichedFeed, users] = await Promise.all([
     buildEnrichedFeed(),
     loadUsers(),
@@ -242,10 +242,10 @@ async function executeSendInvites({
 }
 
 /**
- * Stream chat response from Luna agent
+ * Stream chat response from Selene agent
  */
-export async function streamLunaChat(request: AgentChatRequest) {
-  const context = await buildLunaContext();
+export async function streamSeleneChat(request: AgentChatRequest) {
+  const context = await buildSeleneContext();
 
   const messages = [
     ...(request.conversationHistory || []).map((msg) => ({
@@ -257,7 +257,7 @@ export async function streamLunaChat(request: AgentChatRequest) {
 
   const result = streamText({
     model: google("gemini-3.0-flash"),
-    system: `${LUNA_SYSTEM_PROMPT}\n\n${context}`,
+    system: `${SELENE_SYSTEM_PROMPT}\n\n${context}`,
     messages,
     tools: {
       bookTable: {

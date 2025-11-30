@@ -113,7 +113,7 @@ struct AgentSheetView: View {
                 // Agent header
                 agentHeader
                 
-                // Smart reasoning banner from Luna
+                // Smart reasoning banner from Selene
                 if let suggestion = agentSuggestion {
                     reasoningBanner(suggestion: suggestion)
                 }
@@ -180,7 +180,7 @@ struct AgentSheetView: View {
             HStack(spacing: 6) {
                 Image(systemName: "sparkles")
                     .foregroundStyle(SeleneTheme.moonGlow)
-                Text("Luna")
+                Text("Selene")
                     .font(.seleneCaption)
                     .foregroundStyle(.secondary)
             }
