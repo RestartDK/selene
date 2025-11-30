@@ -41,16 +41,20 @@ struct SavedVenueCard: View {
                         .foregroundStyle(.primary)
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     
                     Text(venue.location)
                         .font(.seleneSmall)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
+                        .truncationMode(.tail)
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                 }
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                 .padding(10)
-                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.seleneSecondaryBackground)
             }
+            .frame(maxWidth: .infinity)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: Color.overlayBlack.opacity(0.1), radius: 4, x: 0, y: 2)
         }
