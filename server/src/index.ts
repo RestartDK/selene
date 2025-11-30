@@ -178,25 +178,42 @@ async function handleRequest(req: Request): Promise<Response> {
       return response;
     }
 
-    // ===== VIDEO FILES =====
-    // GET /videos/:filename - Serve video files
-    const videoMatch = extractParam(path, "/videos/:filename");
-    if (method === "GET" && videoMatch && videoMatch.filename) {
-      console.log(`[${timestamp}] Handling GET /videos/${videoMatch.filename}`);
+    // ===== MEDIA FILES =====
+    // GET /media/:filename - Serve media files (videos and images)
+    const mediaMatch = extractParam(path, "/media/:filename");
+    if (method === "GET" && mediaMatch && mediaMatch.filename) {
+      console.log(`[${timestamp}] Handling GET /media/${mediaMatch.filename}`);
       try {
-        const videoPath = `./src/db/data/videos/${videoMatch.filename}`;
-        const file = Bun.file(videoPath);
+        const mediaPath = `./src/db/data/media/${mediaMatch.filename}`;
+        const file = Bun.file(mediaPath);
         
         if (!(await file.exists())) {
-          console.log(`[${timestamp}] Video not found: ${videoMatch.filename}`);
-          return errorResponse("Video not found", 404);
+          console.log(`[${timestamp}] Media not found: ${mediaMatch.filename}`);
+          return errorResponse("Media not found", 404);
         }
         
         const fileSize = file.size;
+        const isVideo = mediaMatch.filename.endsWith(".mp4") || mediaMatch.filename.endsWith(".mov") || mediaMatch.filename.endsWith(".webm");
+        const isImage = mediaMatch.filename.endsWith(".jpg") || mediaMatch.filename.endsWith(".jpeg") || mediaMatch.filename.endsWith(".png") || mediaMatch.filename.endsWith(".gif");
+        
+        // Determine content type
+        let contentType = "application/octet-stream";
+        if (isVideo) {
+          contentType = "video/mp4";
+        } else if (isImage) {
+          if (mediaMatch.filename.endsWith(".jpg") || mediaMatch.filename.endsWith(".jpeg")) {
+            contentType = "image/jpeg";
+          } else if (mediaMatch.filename.endsWith(".png")) {
+            contentType = "image/png";
+          } else if (mediaMatch.filename.endsWith(".gif")) {
+            contentType = "image/gif";
+          }
+        }
+        
         const rangeHeader = req.headers.get("range");
         
         // Handle range requests for video streaming
-        if (rangeHeader) {
+        if (isVideo && rangeHeader) {
           const rangeMatch = rangeHeader.match(/bytes=(\d+)-(\d*)/);
           if (rangeMatch && rangeMatch[1]) {
             const start = parseInt(rangeMatch[1], 10);
@@ -211,7 +228,7 @@ async function handleRequest(req: Request): Promise<Response> {
               status: 206, // Partial Content
               headers: {
                 ...corsHeaders,
-                "Content-Type": "video/mp4",
+                "Content-Type": contentType,
                 "Content-Range": `bytes ${start}-${end}/${fileSize}`,
                 "Accept-Ranges": "bytes",
                 "Content-Length": chunkSize.toString(),
@@ -225,15 +242,15 @@ async function handleRequest(req: Request): Promise<Response> {
         return new Response(file, {
           headers: {
             ...corsHeaders,
-            "Content-Type": "video/mp4",
-            "Accept-Ranges": "bytes",
+            "Content-Type": contentType,
+            "Accept-Ranges": isVideo ? "bytes" : "none",
             "Content-Length": fileSize.toString(),
             "Cache-Control": "public, max-age=3600",
           },
         });
       } catch (error) {
-        console.error(`[${timestamp}] Video serving error:`, error);
-        return errorResponse("Failed to serve video", 500);
+        console.error(`[${timestamp}] Media serving error:`, error);
+        return errorResponse("Failed to serve media", 500);
       }
     }
 
@@ -263,5 +280,5 @@ const server = Bun.serve({
 });
 
 console.log(`🌙 Selene API server running at http://localhost:${server.port}`);
-console.log(`   Current user: ${process.env.CURRENT_USER_ID || "alex"}`);
+console.log(`   Current user: ${process.env.CURRENT_USER_ID || "550e8400-e29b-41d4-a716-446655440000"}`);
 

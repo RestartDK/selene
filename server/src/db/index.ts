@@ -79,6 +79,6 @@ export const saveBookings = (data: Booking[]) =>
 
 // Helper to get current user (simulated auth via env variable)
 export function getCurrentUserId(): string {
-  return process.env.CURRENT_USER_ID || "alex";
+  return process.env.CURRENT_USER_ID || "550e8400-e29b-41d4-a716-446655440000";
 }
 

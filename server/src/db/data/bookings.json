@@ -1,2 +1,16 @@
-[]
-
+[
+  {
+    "id": "skiN7b3SDR84tFvL2B0Of",
+    "venueId": "rooftop-99",
+    "userId": "550e8400-e29b-41d4-a716-446655440000",
+    "guests": [
+      "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+      "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+    ],
+    "partySize": 3,
+    "dateTime": "2025-12-01T04:00:00Z",
+    "status": "confirmed",
+    "confirmationCode": "D93B5Q",
+    "createdAt": "2025-11-30T16:44:30.608Z"
+  }
+]

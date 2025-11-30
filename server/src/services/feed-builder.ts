@@ -25,7 +25,7 @@ function constructVideoUrl(mediaUrl: string, baseUrl: string): string {
   }
   
   // Otherwise, assume it's a filename and construct path
-  return `${baseUrl}/videos/${mediaUrl}`;
+  return `${baseUrl}/media/${mediaUrl}`;
 }
 
 /**
