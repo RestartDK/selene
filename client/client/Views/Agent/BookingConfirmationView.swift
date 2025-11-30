@@ -148,11 +148,11 @@ struct BookingConfirmationView: View {
     // MARK: - Action Buttons
     private var actionButtons: some View {
         VStack(spacing: 12) {
-            GlowingButton("Add to Calendar", icon: "calendar.badge.plus", style: .secondary) {
+            AppButton("Add to Calendar", icon: "calendar.badge.plus", style: .secondary) {
                 onAddToCalendar()
             }
             
-            GlowingButton("Done", style: .primary) {
+            AppButton("Done", style: .primary) {
                 onDone()
             }
         }
@@ -174,19 +174,4 @@ struct BookingConfirmationView: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    let booking = Booking(
-        venue: MockData.blueNote,
-        dateTime: Date(),
-        partySize: 3,
-        attendees: [MockData.currentUser, MockData.meg, MockData.dk]
-    )
-    
-    BookingConfirmationView(
-        booking: booking,
-        onAddToCalendar: {},
-        onDone: {}
-    )
-}
 

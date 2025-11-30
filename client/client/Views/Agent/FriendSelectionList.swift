@@ -8,17 +8,27 @@
 import SwiftUI
 
 struct FriendSelectionList: View {
-    let availableFriends: [User]
+    let interestedFriends: [User]
+    let allFriends: [User]
     @Binding var selectedFriends: Set<UUID>
     var onSelectionChange: ((User, Bool) -> Void)?
     
     @State private var searchText: String = ""
     
-    private var filteredFriends: [User] {
+    // Get interested friend IDs for filtering
+    private var interestedFriendIds: Set<UUID> {
+        Set(interestedFriends.map { $0.id })
+    }
+    
+    // Filtered friends from all friends (excluding already interested ones)
+    private var filteredAllFriends: [User] {
+        let friendsNotInterested = allFriends.filter { !interestedFriendIds.contains($0.id) }
+        
         if searchText.isEmpty {
-            return availableFriends
+            return friendsNotInterested
         }
-        return availableFriends.filter {
+        
+        return friendsNotInterested.filter {
             $0.name.localizedCaseInsensitiveContains(searchText) ||
             $0.username.localizedCaseInsensitiveContains(searchText)
         }
@@ -30,29 +40,83 @@ struct FriendSelectionList: View {
             Text("SELECT WHO TO INVITE")
                 .seleneTextStyle(.sectionHeader)
             
-            // Friend list
-            VStack(spacing: 0) {
-                ForEach(filteredFriends) { friend in
-                    SelectableFriendRow(
-                        user: friend,
-                        isSelected: selectedFriends.contains(friend.id)
-                    ) {
-                        toggleSelection(friend)
-                    }
+            // Interested friends section (pre-selected)
+            if !interestedFriends.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Interested")
+                        .font(.seleneCaptionMedium)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 4)
                     
-                    if friend.id != filteredFriends.last?.id {
+                    VStack(spacing: 0) {
+                        ForEach(interestedFriends) { friend in
+                            SelectableFriendRow(
+                                user: friend,
+                                isSelected: selectedFriends.contains(friend.id)
+                            ) {
+                                toggleSelection(friend)
+                            }
+                            
+                            if friend.id != interestedFriends.last?.id {
+                                Divider()
+                                    .padding(.leading, 56)
+                            }
+                        }
+                    }
+                    .background(Color.seleneSecondaryBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+            }
+            
+            // Search section for all friends
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Search Friends")
+                    .font(.seleneCaptionMedium)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 4)
+                
+                VStack(spacing: 0) {
+                    // Search row
+                    searchRow
+                    
+                    // Search results
+                    if !searchText.isEmpty && !filteredAllFriends.isEmpty {
                         Divider()
                             .padding(.leading, 56)
+                        
+                        ForEach(filteredAllFriends) { friend in
+                            SelectableFriendRow(
+                                user: friend,
+                                isSelected: selectedFriends.contains(friend.id)
+                            ) {
+                                toggleSelection(friend)
+                            }
+                            
+                            if friend.id != filteredAllFriends.last?.id {
+                                Divider()
+                                    .padding(.leading, 56)
+                            }
+                        }
+                    } else if !searchText.isEmpty && filteredAllFriends.isEmpty {
+                        Divider()
+                            .padding(.leading, 56)
+                        
+                        HStack(spacing: 12) {
+                            Spacer()
+                                .frame(width: 44)
+                            
+                            Text("No friends found")
+                                .font(.seleneBody)
+                                .foregroundStyle(.secondary)
+                                .padding(.vertical, 16)
+                            
+                            Spacer()
+                        }
                     }
                 }
-                
-                // Search row
-                Divider()
-                    .padding(.leading, 56)
-                searchRow
+                .background(Color.seleneSecondaryBackground)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .background(Color.seleneSecondaryBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
     
@@ -164,12 +228,3 @@ struct SelectableFriendRow: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    FriendSelectionList(
-        availableFriends: MockData.allFriends,
-        selectedFriends: .constant([MockData.meg.id, MockData.dk.id])
-    )
-    .padding()
-    .preferredColorScheme(.dark)
-}

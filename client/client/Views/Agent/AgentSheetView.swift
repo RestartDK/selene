@@ -23,12 +23,14 @@ struct AgentSheetView: View {
     @State private var confirmedBooking: Booking?
     @State private var isLoading: Bool = false
     
-    // Available friends from AppState or venue's interested friends
-    private var availableFriends: [User] {
-        if !appState.friends.isEmpty {
-            return appState.friends
-        }
-        return venue.interestedFriends
+    // Interested friends (pre-selected)
+    private var interestedFriends: [User] {
+        venue.interestedFriends
+    }
+    
+    // All friends for searching
+    private var allFriends: [User] {
+        appState.friends
     }
     
     var body: some View {
@@ -61,10 +63,22 @@ struct AgentSheetView: View {
             }
         }
         .onAppear {
+            // Pre-select all interested friends
+            for friend in interestedFriends {
+                selectedFriends.insert(friend.id)
+                let apiId = friend.name.lowercased()
+                if !selectedFriendApiIds.contains(apiId) {
+                    selectedFriendApiIds.append(apiId)
+                }
+            }
+            
             // Pre-select inviter if this is from an invitation
             if let invitation = invitation {
                 selectedFriends.insert(invitation.inviter.id)
-                selectedFriendApiIds.append(invitation.inviter.name.lowercased())
+                let apiId = invitation.inviter.name.lowercased()
+                if !selectedFriendApiIds.contains(apiId) {
+                    selectedFriendApiIds.append(apiId)
+                }
             }
             
             // Set default time to tonight at 9 PM
@@ -86,7 +100,8 @@ struct AgentSheetView: View {
                 
                 // Friend selection
                 FriendSelectionList(
-                    availableFriends: availableFriends,
+                    interestedFriends: interestedFriends,
+                    allFriends: allFriends,
                     selectedFriends: $selectedFriends,
                     onSelectionChange: { user, isSelected in
                         let apiId = user.name.lowercased()
@@ -113,32 +128,27 @@ struct AgentSheetView: View {
     // MARK: - Agent Header
     private var agentHeader: some View {
         VStack(spacing: 12) {
-            // Moon icon
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.sheetGradientStart,
-                                Color.sheetGradientEnd
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 60, height: 60)
-                
-                Image(systemName: "moon.stars.fill")
-                    .font(.system(size: 28))
-                    .foregroundStyle(SeleneTheme.moonGlow)
-            }
-            
-            Text("Selene Agent")
+            // Venue name
+            Text(venue.name)
                 .font(.seleneAgentTitle)
-            
-            Text("\"I can secure a spot via OpenTable\"")
-                .seleneTextStyle(.agentMessage)
                 .multilineTextAlignment(.center)
+            
+            // Category and vibe
+            HStack(spacing: 4) {
+                Text(venue.categoryIcon)
+                Text("\(venue.category) • \(venue.vibe)")
+            }
+            .font(.seleneCaption)
+            .foregroundStyle(.secondary)
+            
+            // Location and distance
+            HStack(spacing: 4) {
+                Image(systemName: "location.fill")
+                    .font(.system(size: 11))
+                Text("\(venue.distance) • \(venue.location)")
+            }
+            .font(.seleneCaption)
+            .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
@@ -189,7 +199,7 @@ struct AgentSheetView: View {
     
     // MARK: - Book Button
     private var bookButton: some View {
-        GlowingButton("Book & Invite", icon: "sparkles", style: .gold) {
+        AppButton("Book & Invite", icon: "sparkles", style: .success) {
             performBooking()
         }
         .disabled(isLoading)
@@ -221,9 +231,21 @@ struct AgentSheetView: View {
         isLoading = true
         
         Task {
-            // Get selected users
-            let selectedUsers = availableFriends.filter { selectedFriends.contains($0.id) }
-            let partySize = selectedUsers.count + 1 // +1 for current user
+            // Get selected users from both interested friends and all friends
+            let selectedFromInterested = interestedFriends.filter { selectedFriends.contains($0.id) }
+            let selectedFromAll = allFriends.filter { selectedFriends.contains($0.id) }
+            
+            // Combine and deduplicate by ID
+            var allSelectedUsers: [User] = []
+            var seenIds = Set<UUID>()
+            for user in selectedFromInterested + selectedFromAll {
+                if !seenIds.contains(user.id) {
+                    allSelectedUsers.append(user)
+                    seenIds.insert(user.id)
+                }
+            }
+            
+            let partySize = allSelectedUsers.count + 1 // +1 for current user
             
             // Create booking via API
             if let booking = await appState.createBooking(
@@ -232,7 +254,7 @@ struct AgentSheetView: View {
                 partySize: partySize,
                 dateTime: selectedDate,
                 guestIds: selectedFriendApiIds,
-                guests: selectedUsers
+                guests: allSelectedUsers
             ) {
                 // Also create invites for selected friends
                 if !selectedFriendApiIds.isEmpty {
@@ -255,12 +277,3 @@ struct AgentSheetView: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    AgentSheetView(
-        venue: MockData.blueNote,
-        apiVenueId: "blue-note",
-        invitation: nil
-    )
-    .preferredColorScheme(.dark)
-}
