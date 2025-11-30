@@ -379,20 +379,38 @@ Cursor AI (Claude) was used extensively as a coding agent throughout development
 
 ### Planning Phase
 
-1. **Requirements Analysis** - Parsed assignment document to identify core features
-2. **User Flow Mapping** - Documented discovery → validation → action flow
-3. **Mock Data Strategy** - Defined personas (Alex, Sarah, Mike) and venues
+The development process began with hands-on design exploration:
+
+1. **Paper Sketches** - Initial UI mockups sketched on paper to explore layout and user flows
+   - Feed view with video reels and social overlays
+   - Agent booking sheet interactions
+   - Profile and saved places layouts
+   
+   ![UI Sketch 1](attachments/IMG_3061.jpeg)
+   ![UI Sketch 2](attachments/IMG_3064.jpeg)
+
+2. **Requirements Analysis** - Parsed assignment document to identify core features
+3. **User Flow Mapping** - Documented discovery → validation → action flow
+4. **Mock Data Strategy** - Defined personas (Alex, Sarah, Mike) and venues
 
 ### Implementation Plans
 
-Development was guided by structured plans in `.cursor/plans/`:
+After sketching, development was guided by structured plans in `.cursor/plans/`:
 
 | Plan | Description |
 |------|-------------|
-| `swiftui-ui-draft` | Complete UI wireframes and component hierarchy |
+| `swiftui-ui-draft` | Complete UI wireframes and component hierarchy (digitalized from sketches) |
 | `selene-backend-implementation` | API design and data layer architecture |
 | `proactive-agent-suggestions` | Smart reasoning feature specification |
 | `invite-acceptance-flow` | Invitation UX implementation |
+
+### Design Process Flow
+
+```
+Paper Sketches → Digital Wireframes → Implementation Plans → Code
+     ↓                ↓                      ↓              ↓
+  Quick ideas    Structured plans    Technical specs   SwiftUI/TS
+```
 
 ### Key Challenges & Solutions
 
