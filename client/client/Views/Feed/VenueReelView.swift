@@ -195,13 +195,3 @@ struct VenueReelView: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    VenueReelView(
-        feedItem: FeedItem(venue: MockData.blueNote, apiVenueId: "blue-note"),
-        onSelectVenue: { _ in },
-        onAcceptInvitation: { _ in }
-    )
-    .ignoresSafeArea()
-    .preferredColorScheme(.dark)
-}

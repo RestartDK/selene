@@ -94,15 +94,4 @@ struct MoreMutualsRow: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    VStack {
-        InterestedFriendRow(user: MockData.meg)
-        Divider()
-        InterestedFriendRow(user: MockData.dk)
-        Divider()
-        MoreMutualsRow(count: 5)
-    }
-    .padding()
-}
 

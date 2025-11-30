@@ -234,7 +234,7 @@ struct VenueDetailView: View {
             
             HStack(spacing: 12) {
                 // Save button
-                GlowingButton("Interested", icon: isSaved ? "heart.fill" : "heart", style: .secondary) {
+                AppButton("Interested", icon: isSaved ? "heart.fill" : "heart", style: .secondary) {
                     Task {
                         if isSaved {
                             await appState.unheartVenue(displayVenue, apiId: apiVenueId)
@@ -246,7 +246,7 @@ struct VenueDetailView: View {
                 }
                 
                 // Let's Go button
-                GlowingButton("Let's Go", icon: "arrow.right", style: .primary) {
+                AppButton("Let's Go", icon: "arrow.right", style: .primary) {
                     showAgentSheet = true
                 }
             }
@@ -257,13 +257,3 @@ struct VenueDetailView: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    NavigationStack {
-        VenueDetailView(
-            venue: MockData.blueNote,
-            apiVenueId: "blue-note"
-        )
-    }
-    .preferredColorScheme(.dark)
-}

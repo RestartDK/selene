@@ -77,30 +77,3 @@ struct VenueInfoOverlay: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    ZStack {
-        // Mock video background
-        Rectangle()
-            .fill(
-                LinearGradient(
-                    colors: [Color.accentPurple, Color.accentBlue],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-        
-        VenueInfoOverlay(
-            venue: MockData.blueNote,
-            isSaved: .constant(false),
-            onTap: {
-                print("Tapped venue")
-            },
-            onSaveToggle: { saved in
-                print("Save toggled: \(saved)")
-            }
-        )
-    }
-    .ignoresSafeArea()
-    .preferredColorScheme(.dark)
-}

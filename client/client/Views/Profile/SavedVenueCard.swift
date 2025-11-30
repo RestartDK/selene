@@ -58,14 +58,4 @@ struct SavedVenueCard: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-        SavedVenueCard(venue: MockData.blueNote) {}
-        SavedVenueCard(venue: MockData.rooftop99) {}
-        SavedVenueCard(venue: MockData.omenCoffee) {}
-        SavedVenueCard(venue: MockData.noirBar) {}
-    }
-    .padding()
-}
 

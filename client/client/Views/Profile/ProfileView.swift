@@ -15,8 +15,8 @@ struct ProfileView: View {
     @State private var showVenueDetail: Bool = false
     @State private var showSettings: Bool = false
     
-    private var displayUser: User {
-        appState.currentUser ?? MockData.currentUser
+    private var displayUser: User? {
+        appState.currentUser
     }
     
     var body: some View {
@@ -81,54 +81,87 @@ struct ProfileView: View {
     
     // MARK: - Profile Header
     private var profileHeader: some View {
-        VStack(spacing: 16) {
-            // Avatar
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.cardGradientStart,
-                                Color.cardGradientEnd
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 100, height: 100)
-                
-                Circle()
-                    .stroke(
-                        LinearGradient(
-                            colors: [Color.contentPrimary.opacity(0.3), Color.contentPrimary.opacity(0.1)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 2
-                    )
-                    .frame(width: 100, height: 100)
-                
-                Text(displayUser.avatarEmoji)
-                    .font(.system(size: 50))
-            }
-            
-            // Name and username
-            VStack(spacing: 4) {
-                Text(displayUser.name)
-                    .font(.seleneHeadline)
-                    .foregroundStyle(.primary)
-                
-                Text("@\(displayUser.username)")
-                    .font(.seleneCaption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            // Vibe status badge
-            if let currentUser = appState.currentUser {
-                vibeStatusBadge(for: currentUser)
+        Group {
+            if let user = displayUser {
+                VStack(spacing: 16) {
+                    // Avatar
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        Color.cardGradientStart,
+                                        Color.cardGradientEnd
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 100, height: 100)
+                        
+                        Circle()
+                            .stroke(
+                                LinearGradient(
+                                    colors: [Color.contentPrimary.opacity(0.3), Color.contentPrimary.opacity(0.1)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 2
+                            )
+                            .frame(width: 100, height: 100)
+                        
+                        // Display image if available, otherwise emoji
+                        if let avatarUrl = user.avatarUrl, let url = URL(string: avatarUrl) {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                        .frame(width: 50, height: 50)
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(Circle())
+                                case .failure:
+                                    Text(user.avatarEmoji)
+                                        .font(.system(size: 50))
+                                @unknown default:
+                                    Text(user.avatarEmoji)
+                                        .font(.system(size: 50))
+                                }
+                            }
+                        } else {
+                            Text(user.avatarEmoji)
+                                .font(.system(size: 50))
+                        }
+                    }
+                    
+                    // Name and username
+                    VStack(spacing: 4) {
+                        Text(user.name)
+                            .font(.seleneHeadline)
+                            .foregroundStyle(.primary)
+                        
+                        Text("@\(user.username)")
+                            .font(.seleneCaption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    // Vibe status badge
+                    vibeStatusBadge(for: user)
+                }
+                .padding(.top, 20)
+            } else {
+                VStack(spacing: 16) {
+                    ProgressView()
+                    Text("Loading profile...")
+                        .font(.seleneCaption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.top, 20)
             }
         }
-        .padding(.top, 20)
     }
     
     // MARK: - Vibe Status Badge

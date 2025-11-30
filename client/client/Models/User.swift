@@ -12,6 +12,7 @@ struct User: Identifiable, Hashable {
     let name: String
     let username: String
     let avatarEmoji: String
+    let avatarUrl: String?
     var isOnline: Bool
     var matchScore: MatchScore
     
@@ -34,6 +35,7 @@ struct User: Identifiable, Hashable {
         name: String,
         username: String,
         avatarEmoji: String = "😊",
+        avatarUrl: String? = nil,
         isOnline: Bool = false,
         matchScore: MatchScore = .medium
     ) {
@@ -41,6 +43,7 @@ struct User: Identifiable, Hashable {
         self.name = name
         self.username = username
         self.avatarEmoji = avatarEmoji
+        self.avatarUrl = avatarUrl
         self.isOnline = isOnline
         self.matchScore = matchScore
     }

@@ -75,7 +75,7 @@ struct InvitedOverlay: View {
             }
         }
         .padding(.horizontal, 20)
-        .padding(.bottom, 60) // Content padding + space for tab bar
+        .padding(.bottom, 100) // Content padding + space for tab bar
     }
     
     private var invitedBadge: some View {
@@ -108,26 +108,4 @@ struct InvitedOverlay: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    ZStack {
-        // Mock video background
-        Rectangle()
-            .fill(
-                LinearGradient(
-                    colors: [Color.accentIndigo, Color.accentPurple],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-        
-        InvitedOverlay(
-            venue: MockData.blueNote,
-            invitation: MockData.sampleInvitation,
-            onAccept: { print("Accepted!") },
-            onTapVenue: { print("Tapped venue") }
-        )
-    }
-    .ignoresSafeArea()
-}
 

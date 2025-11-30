@@ -58,14 +58,4 @@ struct SavedPlacesGrid: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    ScrollView {
-        SavedPlacesGrid(
-            venues: MockData.allVenues,
-            onSelectVenue: { _ in }
-        )
-        .padding()
-    }
-}
 

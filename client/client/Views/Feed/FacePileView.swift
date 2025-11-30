@@ -104,8 +104,31 @@ struct AvatarCircle: View {
                     .stroke(Color.contentPrimary.opacity(0.3), lineWidth: 1)
                     .frame(width: size, height: size)
                 
-                Text(user.avatarEmoji)
-                    .font(.system(size: size * 0.5))
+                // Display image if available, otherwise emoji
+                if let avatarUrl = user.avatarUrl, let url = URL(string: avatarUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: size * 0.6, height: size * 0.6)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: size, height: size)
+                                .clipShape(Circle())
+                        case .failure:
+                            Text(user.avatarEmoji)
+                                .font(.system(size: size * 0.5))
+                        @unknown default:
+                            Text(user.avatarEmoji)
+                                .font(.system(size: size * 0.5))
+                        }
+                    }
+                } else {
+                    Text(user.avatarEmoji)
+                        .font(.system(size: size * 0.5))
+                }
             }
             
             // Online indicator
@@ -123,23 +146,4 @@ struct AvatarCircle: View {
     }
 }
 
-// MARK: - Preview
-#Preview {
-    ZStack {
-        Color.overlayBlack
-        
-        VStack(spacing: 20) {
-            FacePileView(users: [MockData.meg, MockData.dk])
-            
-            FacePileView(users: MockData.allFriends)
-            
-            FacePileView(users: [MockData.meg])
-            
-            HStack {
-                AvatarCircle(user: MockData.meg, size: 40, showOnlineIndicator: true)
-                AvatarCircle(user: MockData.dk, size: 40, showOnlineIndicator: true)
-            }
-        }
-    }
-}
 
