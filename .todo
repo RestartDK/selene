@@ -1,0 +1,5 @@
+Todo:
+  ✔ Fix scroll direction to be vertical @done(25-11-29 21:45)
+  - Fix the clipping on the ui @started(25-11-29 21:45)
+  - Remove gradient buttons, looks ai generated
+  - Make sure the backend is returning videos to be played on the frontend

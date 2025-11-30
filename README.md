@@ -239,7 +239,11 @@ We need specific names and faces to create consistency across the Feed and Profi
 - **Social State:** None (Shows "Be the first to discover")
 - **Interaction:** User taps "Heart" → Moves to Profile "Vibe List"
 
-## Technical choices
+## How I did this
+
+- First made the plans above
+- Then constructed the plans in `.cursor` for implementing the ui and backend
+- Note down all problems in my `.todo` file
 
 ## Inspiration
 
