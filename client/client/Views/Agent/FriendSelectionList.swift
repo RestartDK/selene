@@ -10,13 +10,13 @@ import SwiftUI
 struct FriendSelectionList: View {
     let interestedFriends: [User]
     let allFriends: [User]
-    @Binding var selectedFriends: Set<UUID>
+    @Binding var selectedFriends: Set<String>
     var onSelectionChange: ((User, Bool) -> Void)?
     
     @State private var searchText: String = ""
     
     // Get interested friend IDs for filtering
-    private var interestedFriendIds: Set<UUID> {
+    private var interestedFriendIds: Set<String> {
         Set(interestedFriends.map { $0.id })
     }
     

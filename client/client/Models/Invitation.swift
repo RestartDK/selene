@@ -9,6 +9,7 @@ import Foundation
 
 struct Invitation: Identifiable {
     let id: UUID
+    let apiInviteId: String
     let venue: Venue
     let inviter: User
     let invitedAt: Date
@@ -24,6 +25,7 @@ struct Invitation: Identifiable {
     
     init(
         id: UUID = UUID(),
+        apiInviteId: String,
         venue: Venue,
         inviter: User,
         invitedAt: Date = Date(),
@@ -31,6 +33,7 @@ struct Invitation: Identifiable {
         scheduledTime: Date? = nil
     ) {
         self.id = id
+        self.apiInviteId = apiInviteId
         self.venue = venue
         self.inviter = inviter
         self.invitedAt = invitedAt

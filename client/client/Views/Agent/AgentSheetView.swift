@@ -15,7 +15,7 @@ struct AgentSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var appState = AppState.shared
     
-    @State private var selectedFriends: Set<UUID> = []
+    @State private var selectedFriends: Set<String> = []
     @State private var selectedFriendApiIds: [String] = []
     @State private var selectedDate: Date = Date()
     @State private var showDatePicker: Bool = false
@@ -104,7 +104,7 @@ struct AgentSheetView: View {
                     allFriends: allFriends,
                     selectedFriends: $selectedFriends,
                     onSelectionChange: { user, isSelected in
-                        let apiId = user.name.lowercased()
+                        let apiId = user.id
                         if isSelected {
                             if !selectedFriendApiIds.contains(apiId) {
                                 selectedFriendApiIds.append(apiId)
@@ -237,7 +237,7 @@ struct AgentSheetView: View {
             
             // Combine and deduplicate by ID
             var allSelectedUsers: [User] = []
-            var seenIds = Set<UUID>()
+            var seenIds = Set<String>()
             for user in selectedFromInterested + selectedFromAll {
                 if !seenIds.contains(user.id) {
                     allSelectedUsers.append(user)

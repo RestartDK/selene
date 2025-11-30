@@ -52,6 +52,9 @@ export async function buildEnrichedFeed(baseUrl?: string): Promise<EnrichedVenue
     // Get all interests for this venue
     const venueInterests = interests.filter((i) => i.venueId === venue.id);
 
+    // Check if current user has saved/hearted this venue
+    const isSaved = venueInterests.some((i) => i.userId === currentUserId);
+
     // Find friends who are interested
     const interestedFriends = venueInterests
       .filter((i) => friendIds.has(i.userId))
@@ -78,6 +81,7 @@ export async function buildEnrichedFeed(baseUrl?: string): Promise<EnrichedVenue
       interestedFriends,
       mutualCount,
       inviteState,
+      isSaved,
     };
   });
 }

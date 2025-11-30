@@ -33,6 +33,7 @@ export interface EnrichedVenue extends Venue {
   interestedFriends: User[];
   mutualCount: number;
   inviteState: Invite | null;
+  isSaved: boolean;
 }
 
 export interface Interest {
@@ -49,6 +50,17 @@ export interface Invite {
   venueId: string;
   fromUserId: string;
   toUserId: string;
+  status: InviteStatus;
+  proposedTime: string;
+  createdAt: string;
+}
+
+// Enriched invite with full user objects for API responses
+export interface EnrichedInvite {
+  id: string;
+  venueId: string;
+  fromUser: User;
+  toUser: User;
   status: InviteStatus;
   proposedTime: string;
   createdAt: string;

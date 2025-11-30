@@ -65,6 +65,7 @@ struct APIEnrichedVenue: Codable, Identifiable {
     let interestedFriends: [APIUser]
     let mutualCount: Int
     let inviteState: APIInvite?
+    let isSaved: Bool
 }
 
 // MARK: - Interest Types
@@ -82,6 +83,18 @@ enum APIInviteStatus: String, Codable {
     case declined = "declined"
 }
 
+// Enriched invite with full user objects (returned by GET /invites)
+struct APIEnrichedInvite: Codable, Identifiable {
+    let id: String
+    let venueId: String
+    let fromUser: APIUser
+    let toUser: APIUser
+    let status: APIInviteStatus
+    let proposedTime: String
+    let createdAt: String
+}
+
+// Legacy invite format (used in some responses like inviteState in EnrichedVenue)
 struct APIInvite: Codable, Identifiable {
     let id: String
     let venueId: String
@@ -169,9 +182,10 @@ struct CreateBookingResponse: Codable {
 }
 
 struct GetInvitesResponse: Codable {
-    let sent: [APIInvite]
-    let received: [APIInvite]
-    let pending: [APIInvite]
+    let sent: [APIEnrichedInvite]
+    let received: [APIEnrichedInvite]
+    let related: [APIEnrichedInvite]?
+    let pending: [APIEnrichedInvite]
 }
 
 struct GetBookingsResponse: Codable {

@@ -172,10 +172,11 @@ class APIClient: ObservableObject {
     
     // MARK: - Invite Endpoints
     
-    func getInvites() async throws -> [APIInvite] {
+    func getInvites() async throws -> [APIEnrichedInvite] {
         let response: GetInvitesResponse = try await request(endpoint: "/invites")
-        // Return all invites (sent and received combined)
-        return response.sent + response.received
+        // Return all invites (sent, received, and related combined)
+        let related = response.related ?? []
+        return response.sent + response.received + related
     }
     
     func createInvite(request: CreateInviteRequest) async throws -> APIInvite {
@@ -230,7 +231,7 @@ extension APIUser {
         }()
         
         return User(
-            id: UUID(uuidString: id) ?? UUID(),
+            id: id, // Use the API user ID string directly
             name: name,
             username: name.lowercased(),
             avatarEmoji: avatarForName(name),
@@ -268,7 +269,7 @@ extension APIEnrichedVenue {
             heroImageName: thumbnailUrl,
             videoURL: URL(string: mediaUrl),
             interestedFriends: interestedFriends.map { $0.toUser() },
-            isSaved: false // Will be determined by checking interests
+            isSaved: isSaved
         )
     }
     
@@ -281,10 +282,11 @@ extension APIEnrichedVenue {
             // Find the inviter from interested friends or create placeholder
             let inviter = interestedFriends
                 .first { $0.id == invite.fromUserId }?
-                .toUser() ?? User(name: "Someone", username: "unknown")
+                .toUser() ?? User(id: invite.fromUserId, name: "Someone", username: "unknown")
             
             invitation = Invitation(
                 id: UUID(uuidString: invite.id) ?? UUID(),
+                apiInviteId: invite.id,
                 venue: venue,
                 inviter: inviter,
                 invitedAt: ISO8601DateFormatter().date(from: invite.createdAt) ?? Date(),
@@ -306,6 +308,21 @@ extension APIInvite {
     func toInvitation(venue: Venue, inviter: User) -> Invitation {
         Invitation(
             id: UUID(uuidString: id) ?? UUID(),
+            apiInviteId: id,
+            venue: venue,
+            inviter: inviter,
+            invitedAt: ISO8601DateFormatter().date(from: createdAt) ?? Date(),
+            status: status == .pending ? .pending : (status == .accepted ? .accepted : .declined),
+            scheduledTime: ISO8601DateFormatter().date(from: proposedTime)
+        )
+    }
+}
+
+extension APIEnrichedInvite {
+    func toInvitation(venue: Venue, inviter: User) -> Invitation {
+        Invitation(
+            id: UUID(uuidString: id) ?? UUID(),
+            apiInviteId: id,
             venue: venue,
             inviter: inviter,
             invitedAt: ISO8601DateFormatter().date(from: createdAt) ?? Date(),

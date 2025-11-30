@@ -8,7 +8,7 @@
 import Foundation
 
 struct User: Identifiable, Hashable {
-    let id: UUID
+    let id: String // Use API user ID string directly
     let name: String
     let username: String
     let avatarEmoji: String
@@ -31,7 +31,7 @@ struct User: Identifiable, Hashable {
     }
     
     init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         name: String,
         username: String,
         avatarEmoji: String = "😊",

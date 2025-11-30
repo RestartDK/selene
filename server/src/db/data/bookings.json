@@ -1,16 +1,29 @@
 [
   {
-    "id": "skiN7b3SDR84tFvL2B0Of",
-    "venueId": "rooftop-99",
-    "userId": "550e8400-e29b-41d4-a716-446655440000",
+    "id": "ucwg5hhOpwU26ZCJdXIoO",
+    "venueId": "blue-note",
+    "userId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
     "guests": [
-      "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-      "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      "550e8400-e29b-41d4-a716-446655440000"
+    ],
+    "partySize": 2,
+    "dateTime": "2025-12-15T20:00:00Z",
+    "status": "confirmed",
+    "confirmationCode": "F999DL",
+    "createdAt": "2025-11-30T19:09:02.891Z"
+  },
+  {
+    "id": "L3uB05qTz5xgrhQV4dT4a",
+    "venueId": "rooftop-99",
+    "userId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "guests": [
+      "alex",
+      "mike"
     ],
     "partySize": 3,
     "dateTime": "2025-12-01T04:00:00Z",
     "status": "confirmed",
-    "confirmationCode": "D93B5Q",
-    "createdAt": "2025-11-30T16:44:30.608Z"
+    "confirmationCode": "97TBE2",
+    "createdAt": "2025-11-30T19:09:18.722Z"
   }
 ]

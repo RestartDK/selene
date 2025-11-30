@@ -61,6 +61,9 @@ class AppState: ObservableObject {
     @Published var invites: [Invitation] = []
     @Published var bookings: [Booking] = []
     
+    // Store raw API invites (enriched with full user objects)
+    private var apiInvites: [APIEnrichedInvite] = []
+    
     // Loading states
     @Published var feedLoadingState: LoadingState<Void> = .idle
     @Published var userLoadingState: LoadingState<Void> = .idle
@@ -117,11 +120,19 @@ class AppState: ObservableObject {
         
         do {
             let apiVenues = try await apiClient.getVenues()
-            let currentUserId = currentUser?.id.uuidString.lowercased() ?? "alex"
+            let currentUserId = currentUser?.id ?? "alex"
             
             feedItems = apiVenues.map { apiVenue in
                 apiVenue.toFeedItem(currentUserId: currentUserId)
             }
+            
+            // Populate savedVenueIds from server response
+            savedVenueIds = Set(apiVenues.filter { $0.isSaved }.map { $0.id })
+            
+            // Also populate savedVenues
+            savedVenues = feedItems
+                .filter { savedVenueIds.contains($0.apiVenueId) }
+                .map { $0.venue }
             
             feedLoadingState = .loaded(())
         } catch {
@@ -196,20 +207,19 @@ class AppState: ObservableObject {
     
     func loadInvites() async {
         do {
-            let apiInvites = try await apiClient.getInvites()
+            let loadedApiInvites = try await apiClient.getInvites()
+            self.apiInvites = loadedApiInvites
             
             // Convert API invites to local Invitation models
-            // We need venue and inviter info, so we'll map what we can
-            invites = apiInvites.compactMap { apiInvite -> Invitation? in
+            // Now we have full user objects from the API, no need to look them up
+            invites = loadedApiInvites.compactMap { apiInvite -> Invitation? in
                 // Find the venue in our feed
                 guard let feedItem = feedItems.first(where: { $0.apiVenueId == apiInvite.venueId }) else {
                     return nil
                 }
                 
-                // Find the inviter in friends
-                let inviter = friends.first { $0.name.lowercased() == apiInvite.fromUserId } ?? 
-                              User(name: apiInvite.fromUserId, username: apiInvite.fromUserId)
-                
+                // Use the inviter from the enriched API response
+                let inviter = apiInvite.fromUser.toUser()
                 return apiInvite.toInvitation(venue: feedItem.venue, inviter: inviter)
             }
         } catch {
@@ -217,9 +227,23 @@ class AppState: ObservableObject {
         }
     }
     
-    func acceptInvite(_ invitation: Invitation, apiInviteId: String) async {
+    // Get API invite by invitation ID to access full user objects
+    func getAPIInvite(for invitation: Invitation) -> APIEnrichedInvite? {
+        return apiInvites.first { $0.id == invitation.apiInviteId }
+    }
+    
+    // Get invitee user for an invitation (now uses enriched data from API)
+    func getInviteeUser(for invitation: Invitation) -> User? {
+        guard let apiInvite = getAPIInvite(for: invitation) else {
+            return nil
+        }
+        // Use the full user object from the enriched API response
+        return apiInvite.toUser.toUser()
+    }
+    
+    func acceptInvite(_ invitation: Invitation) async {
         do {
-            _ = try await apiClient.updateInvite(id: apiInviteId, status: "accepted")
+            _ = try await apiClient.updateInvite(id: invitation.apiInviteId, status: "accepted")
             
             // Update local state
             if let index = invites.firstIndex(where: { $0.id == invitation.id }) {
@@ -232,14 +256,25 @@ class AppState: ObservableObject {
         }
     }
     
-    func declineInvite(_ invitation: Invitation, apiInviteId: String) async {
+    func declineInvite(_ invitation: Invitation) async {
         do {
-            _ = try await apiClient.updateInvite(id: apiInviteId, status: "declined")
+            _ = try await apiClient.updateInvite(id: invitation.apiInviteId, status: "declined")
             
             // Remove from local state
             invites.removeAll { $0.id == invitation.id }
         } catch {
             handleError(error)
+        }
+    }
+    
+    func getInvitesForVenue(apiVenueId: String) -> [Invitation] {
+        // Match directly on API invite venueId, then find corresponding Invitation objects
+        let matchingApiInviteIds = apiInvites
+            .filter { $0.venueId == apiVenueId }
+            .map { $0.id }
+        
+        return invites.filter { invite in
+            matchingApiInviteIds.contains(invite.apiInviteId)
         }
     }
     

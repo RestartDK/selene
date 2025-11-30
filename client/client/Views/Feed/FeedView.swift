@@ -35,11 +35,21 @@ struct FeedView: View {
                 }
             }
             .sheet(isPresented: $showAgentSheet) {
-                if let venue = selectedVenue {
+                if let venue = selectedVenue, let invitation = selectedInvitation {
+                    // Show invite acceptance view when accepting an invitation
+                    InviteAcceptanceView(
+                        venue: venue,
+                        apiVenueId: selectedApiVenueId,
+                        invitation: invitation
+                    )
+                    .presentationDragIndicator(.visible)
+                    .presentationDetents([.large])
+                } else if let venue = selectedVenue {
+                    // Show agent sheet for creating new bookings
                     AgentSheetView(
                         venue: venue,
                         apiVenueId: selectedApiVenueId,
-                        invitation: selectedInvitation
+                        invitation: nil
                     )
                     .presentationDragIndicator(.visible)
                     .presentationDetents([.large])

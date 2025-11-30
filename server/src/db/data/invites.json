@@ -1,29 +1,38 @@
 [
   {
-    "id": "inv-1",
+    "id": "test-invite-1",
     "venueId": "blue-note",
+    "fromUserId": "550e8400-e29b-41d4-a716-446655440000",
+    "toUserId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "status": "accepted",
+    "proposedTime": "2025-12-15T20:00:00Z",
+    "createdAt": "2025-12-01T10:00:00Z"
+  },
+  {
+    "id": "test-invite-2",
+    "venueId": "blue-note",
+    "fromUserId": "550e8400-e29b-41d4-a716-446655440000",
+    "toUserId": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+    "status": "pending",
+    "proposedTime": "2025-12-15T20:00:00Z",
+    "createdAt": "2025-12-01T10:00:00Z"
+  },
+  {
+    "id": "778b2459-327d-4559-936d-de265fcc35b7",
+    "venueId": "rooftop-99",
     "fromUserId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
     "toUserId": "550e8400-e29b-41d4-a716-446655440000",
     "status": "pending",
-    "proposedTime": "2024-01-20T20:00:00Z",
-    "createdAt": "2024-01-15T19:30:00Z"
+    "proposedTime": "2025-12-01T04:00:00Z",
+    "createdAt": "2025-11-30T19:09:18.737Z"
   },
   {
-    "id": "3BidX3vTjr03IY4KGgh6N",
+    "id": "79240b15-04d9-4b49-b58a-53c00d6ef9e5",
     "venueId": "rooftop-99",
-    "fromUserId": "550e8400-e29b-41d4-a716-446655440000",
-    "toUserId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "fromUserId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "toUserId": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
     "status": "pending",
     "proposedTime": "2025-12-01T04:00:00Z",
-    "createdAt": "2025-11-30T16:44:30.640Z"
-  },
-  {
-    "id": "mpYT1X2TC41OmHRPAe8wi",
-    "venueId": "rooftop-99",
-    "fromUserId": "550e8400-e29b-41d4-a716-446655440000",
-    "toUserId": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-    "status": "pending",
-    "proposedTime": "2025-12-01T04:00:00Z",
-    "createdAt": "2025-11-30T16:44:30.640Z"
+    "createdAt": "2025-11-30T19:09:18.737Z"
   }
 ]
