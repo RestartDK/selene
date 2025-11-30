@@ -1,13 +1,13 @@
 //
-//  GlowingButton.swift
+//  AppButton.swift
 //  client
 //
-//  Selene App - Glowing Action Button Component
+//  Selene App - App Action Button Component
 //
 
 import SwiftUI
 
-struct GlowingButton: View {
+struct AppButton: View {
     let title: String
     let icon: String?
     let style: ButtonVariant
@@ -15,7 +15,7 @@ struct GlowingButton: View {
     
     enum ButtonVariant {
         case primary    // Solid purple
-        case gold       // Solid gold
+        case success    // Solid green (for affirmation actions)
         case secondary  // Outlined style
         case ghost      // Transparent with border
         
@@ -23,8 +23,8 @@ struct GlowingButton: View {
             switch self {
             case .primary:
                 return Color.primaryButtonColor
-            case .gold:
-                return SeleneTheme.accept // Solid gold
+            case .success:
+                return SeleneTheme.success // Solid green
             case .secondary:
                 return Color.seleneSecondaryBackground
             case .ghost:
@@ -34,7 +34,7 @@ struct GlowingButton: View {
         
         var foregroundColor: Color {
             switch self {
-            case .primary, .gold: return Color.contentPrimary
+            case .primary, .success: return Color.contentPrimary
             case .secondary: return .primary
             case .ghost: return .secondary
             }
@@ -110,8 +110,8 @@ struct DualButtonRow: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            GlowingButton(leftTitle, icon: leftIcon, style: .secondary, action: leftAction)
-            GlowingButton(rightTitle, icon: rightIcon, style: .primary, action: rightAction)
+            AppButton(leftTitle, icon: leftIcon, style: .secondary, action: leftAction)
+            AppButton(rightTitle, icon: rightIcon, style: .primary, action: rightAction)
         }
     }
 }
@@ -119,13 +119,13 @@ struct DualButtonRow: View {
 // MARK: - Preview
 #Preview {
     VStack(spacing: 20) {
-        GlowingButton("Book & Invite", icon: "sparkles", style: .gold) {}
+        AppButton("Book & Invite", icon: "sparkles", style: .success) {}
         
-        GlowingButton("Let's Go", icon: "arrow.right", style: .primary) {}
+        AppButton("Let's Go", icon: "arrow.right", style: .success) {}
         
-        GlowingButton("Save", icon: "heart", style: .secondary) {}
+        AppButton("Save", icon: "heart", style: .secondary) {}
         
-        GlowingButton("Cancel", style: .ghost) {}
+        AppButton("Cancel", style: .ghost) {}
         
         DualButtonRow(
             leftTitle: "Save",
