@@ -5,18 +5,28 @@ import { jsonResponse, errorResponse } from "../utils/cors";
 import { nanoid } from "../utils/nanoid";
 
 /**
+ * Extract base URL from request
+ */
+function getBaseUrl(req: Request): string {
+  const url = new URL(req.url);
+  return `${url.protocol}//${url.host}`;
+}
+
+/**
  * GET /venues - List all venues with social state enrichment
  */
-export async function getVenues(): Promise<Response> {
-  const enrichedFeed = await buildEnrichedFeed();
+export async function getVenues(req: Request): Promise<Response> {
+  const baseUrl = getBaseUrl(req);
+  const enrichedFeed = await buildEnrichedFeed(baseUrl);
   return jsonResponse(enrichedFeed);
 }
 
 /**
  * GET /venues/:id - Get single venue with interested friends
  */
-export async function getVenueById(venueId: string): Promise<Response> {
-  const venue = await getEnrichedVenue(venueId);
+export async function getVenueById(venueId: string, req: Request): Promise<Response> {
+  const baseUrl = getBaseUrl(req);
+  const venue = await getEnrichedVenue(venueId, baseUrl);
 
   if (!venue) {
     return errorResponse("Venue not found", 404);
@@ -28,7 +38,7 @@ export async function getVenueById(venueId: string): Promise<Response> {
 /**
  * POST /venues/:id/heart - Mark venue as interested
  */
-export async function heartVenue(venueId: string): Promise<Response> {
+export async function heartVenue(venueId: string, req: Request): Promise<Response> {
   const userId = getCurrentUserId();
   const interests = await loadInterests();
 
@@ -56,7 +66,8 @@ export async function heartVenue(venueId: string): Promise<Response> {
   await saveInterests(interests);
 
   // Return updated venue with enriched data
-  const enrichedVenue = await getEnrichedVenue(venueId);
+  const baseUrl = getBaseUrl(req);
+  const enrichedVenue = await getEnrichedVenue(venueId, baseUrl);
 
   return jsonResponse(
     {
@@ -71,7 +82,7 @@ export async function heartVenue(venueId: string): Promise<Response> {
 /**
  * DELETE /venues/:id/heart - Remove interest from venue
  */
-export async function unheartVenue(venueId: string): Promise<Response> {
+export async function unheartVenue(venueId: string, req: Request): Promise<Response> {
   const userId = getCurrentUserId();
   const interests = await loadInterests();
 
@@ -88,7 +99,8 @@ export async function unheartVenue(venueId: string): Promise<Response> {
   await saveInterests(interests);
 
   // Return updated venue with enriched data
-  const enrichedVenue = await getEnrichedVenue(venueId);
+  const baseUrl = getBaseUrl(req);
+  const enrichedVenue = await getEnrichedVenue(venueId, baseUrl);
 
   return jsonResponse({
     message: "Interest removed",

@@ -7,10 +7,32 @@ import {
   getCurrentUserId,
 } from "../db";
 
+const PORT = process.env.PORT || 3000;
+const DEFAULT_BASE_URL = `http://localhost:${PORT}`;
+
+/**
+ * Construct full video URL from filename or path
+ */
+function constructVideoUrl(mediaUrl: string, baseUrl: string): string {
+  // If it's already a full URL, return as is
+  if (mediaUrl.startsWith("http://") || mediaUrl.startsWith("https://")) {
+    return mediaUrl;
+  }
+  
+  // If it's a relative path starting with /, use as is
+  if (mediaUrl.startsWith("/")) {
+    return `${baseUrl}${mediaUrl}`;
+  }
+  
+  // Otherwise, assume it's a filename and construct path
+  return `${baseUrl}/videos/${mediaUrl}`;
+}
+
 /**
  * Build enriched feed with social state for each venue
  */
-export async function buildEnrichedFeed(): Promise<EnrichedVenue[]> {
+export async function buildEnrichedFeed(baseUrl?: string): Promise<EnrichedVenue[]> {
+  const videoBaseUrl = baseUrl || DEFAULT_BASE_URL;
   const [venues, users, interests, invites] = await Promise.all([
     loadVenues(),
     loadUsers(),
@@ -52,6 +74,7 @@ export async function buildEnrichedFeed(): Promise<EnrichedVenue[]> {
 
     return {
       ...venue,
+      mediaUrl: constructVideoUrl(venue.mediaUrl, videoBaseUrl),
       interestedFriends,
       mutualCount,
       inviteState,
@@ -63,8 +86,9 @@ export async function buildEnrichedFeed(): Promise<EnrichedVenue[]> {
  * Get enriched data for a single venue
  */
 export async function getEnrichedVenue(
-  venueId: string
+  venueId: string,
+  baseUrl?: string
 ): Promise<EnrichedVenue | null> {
-  const enrichedFeed = await buildEnrichedFeed();
+  const enrichedFeed = await buildEnrichedFeed(baseUrl);
   return enrichedFeed.find((v) => v.id === venueId) || null;
 }

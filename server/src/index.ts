@@ -22,10 +22,17 @@ function extractParam(path: string, pattern: string): Record<string, string> | n
   const params: Record<string, string> = {};
 
   for (let i = 0; i < patternParts.length; i++) {
-    if (patternParts[i].startsWith(":")) {
-      const paramName = patternParts[i].slice(1);
-      params[paramName] = pathParts[i];
-    } else if (patternParts[i] !== pathParts[i]) {
+    const pathPart = pathParts[i];
+    const patternPart = patternParts[i];
+    
+    if (!pathPart || !patternPart) {
+      return null;
+    }
+    
+    if (patternPart.startsWith(":")) {
+      const paramName = patternPart.slice(1);
+      params[paramName] = pathPart;
+    } else if (patternPart !== pathPart) {
       return null;
     }
   }
@@ -58,33 +65,33 @@ async function handleRequest(req: Request): Promise<Response> {
     // GET /venues - List all venues
     if (method === "GET" && path === "/venues") {
       console.log(`[${timestamp}] Handling GET /venues`);
-      const response = await getVenues();
+      const response = await getVenues(req);
       console.log(`[${timestamp}] GET /venues - Status: ${response.status}`);
       return response;
     }
 
     // GET /venues/:id - Get single venue
     const venueMatch = extractParam(path, "/venues/:id");
-    if (method === "GET" && venueMatch && !path.includes("/heart")) {
+    if (method === "GET" && venueMatch && venueMatch.id && !path.includes("/heart")) {
       console.log(`[${timestamp}] Handling GET /venues/${venueMatch.id}`);
-      const response = await getVenueById(venueMatch.id);
+      const response = await getVenueById(venueMatch.id, req);
       console.log(`[${timestamp}] GET /venues/${venueMatch.id} - Status: ${response.status}`);
       return response;
     }
 
     // POST /venues/:id/heart - Heart a venue
     const heartMatch = extractParam(path, "/venues/:id/heart");
-    if (method === "POST" && heartMatch) {
+    if (method === "POST" && heartMatch && heartMatch.id) {
       console.log(`[${timestamp}] Handling POST /venues/${heartMatch.id}/heart`);
-      const response = await heartVenue(heartMatch.id);
+      const response = await heartVenue(heartMatch.id, req);
       console.log(`[${timestamp}] POST /venues/${heartMatch.id}/heart - Status: ${response.status}`);
       return response;
     }
 
     // DELETE /venues/:id/heart - Unheart a venue
-    if (method === "DELETE" && heartMatch) {
+    if (method === "DELETE" && heartMatch && heartMatch.id) {
       console.log(`[${timestamp}] Handling DELETE /venues/${heartMatch.id}/heart`);
-      const response = await unheartVenue(heartMatch.id);
+      const response = await unheartVenue(heartMatch.id, req);
       console.log(`[${timestamp}] DELETE /venues/${heartMatch.id}/heart - Status: ${response.status}`);
       return response;
     }
@@ -93,7 +100,7 @@ async function handleRequest(req: Request): Promise<Response> {
 
     // GET /social/interested/:venueId - Get friends interested in venue
     const interestedMatch = extractParam(path, "/social/interested/:venueId");
-    if (method === "GET" && interestedMatch) {
+    if (method === "GET" && interestedMatch && interestedMatch.venueId) {
       console.log(`[${timestamp}] Handling GET /social/interested/${interestedMatch.venueId}`);
       const response = await getInterestedFriends(interestedMatch.venueId);
       console.log(`[${timestamp}] GET /social/interested/${interestedMatch.venueId} - Status: ${response.status}`);
@@ -136,7 +143,7 @@ async function handleRequest(req: Request): Promise<Response> {
 
     // PATCH /invites/:id - Update invite
     const inviteMatch = extractParam(path, "/invites/:id");
-    if (method === "PATCH" && inviteMatch) {
+    if (method === "PATCH" && inviteMatch && inviteMatch.id) {
       console.log(`[${timestamp}] Handling PATCH /invites/${inviteMatch.id}`);
       const response = await updateInvite(inviteMatch.id, req);
       console.log(`[${timestamp}] PATCH /invites/${inviteMatch.id} - Status: ${response.status}`);
@@ -169,6 +176,65 @@ async function handleRequest(req: Request): Promise<Response> {
       const response = await agentChat(req);
       console.log(`[${timestamp}] POST /agent/chat - Status: ${response.status}`);
       return response;
+    }
+
+    // ===== VIDEO FILES =====
+    // GET /videos/:filename - Serve video files
+    const videoMatch = extractParam(path, "/videos/:filename");
+    if (method === "GET" && videoMatch && videoMatch.filename) {
+      console.log(`[${timestamp}] Handling GET /videos/${videoMatch.filename}`);
+      try {
+        const videoPath = `./src/db/data/videos/${videoMatch.filename}`;
+        const file = Bun.file(videoPath);
+        
+        if (!(await file.exists())) {
+          console.log(`[${timestamp}] Video not found: ${videoMatch.filename}`);
+          return errorResponse("Video not found", 404);
+        }
+        
+        const fileSize = file.size;
+        const rangeHeader = req.headers.get("range");
+        
+        // Handle range requests for video streaming
+        if (rangeHeader) {
+          const rangeMatch = rangeHeader.match(/bytes=(\d+)-(\d*)/);
+          if (rangeMatch && rangeMatch[1]) {
+            const start = parseInt(rangeMatch[1], 10);
+            const end = rangeMatch[2] ? parseInt(rangeMatch[2], 10) : fileSize - 1;
+            const chunkSize = end - start + 1;
+            
+            // Read the file chunk
+            const fileBuffer = await file.arrayBuffer();
+            const chunk = fileBuffer.slice(start, end + 1);
+            
+            return new Response(chunk, {
+              status: 206, // Partial Content
+              headers: {
+                ...corsHeaders,
+                "Content-Type": "video/mp4",
+                "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+                "Accept-Ranges": "bytes",
+                "Content-Length": chunkSize.toString(),
+                "Cache-Control": "public, max-age=3600",
+              },
+            });
+          }
+        }
+        
+        // Full file response
+        return new Response(file, {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "video/mp4",
+            "Accept-Ranges": "bytes",
+            "Content-Length": fileSize.toString(),
+            "Cache-Control": "public, max-age=3600",
+          },
+        });
+      } catch (error) {
+        console.error(`[${timestamp}] Video serving error:`, error);
+        return errorResponse("Failed to serve video", 500);
+      }
     }
 
     // ===== HEALTH CHECK =====
