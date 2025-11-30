@@ -156,7 +156,8 @@ class APIClient: ObservableObject {
     }
     
     func heartVenue(id: String) async throws -> APIInterest {
-        try await request(endpoint: "/venues/\(id)/heart", method: "POST")
+        let response: HeartVenueResponse = try await request(endpoint: "/venues/\(id)/heart", method: "POST")
+        return response.interest
     }
     
     func unheartVenue(id: String) async throws {
@@ -172,40 +173,68 @@ class APIClient: ObservableObject {
     // MARK: - Invite Endpoints
     
     func getInvites() async throws -> [APIInvite] {
-        try await request(endpoint: "/invites")
+        let response: GetInvitesResponse = try await request(endpoint: "/invites")
+        // Return all invites (sent and received combined)
+        return response.sent + response.received
     }
     
     func createInvite(request: CreateInviteRequest) async throws -> APIInvite {
         let body = try encoder.encode(request)
-        return try await self.request(endpoint: "/invites", method: "POST", body: body)
+        let response: CreateInviteResponse = try await self.request(endpoint: "/invites", method: "POST", body: body)
+        // Return the first invite (server creates one per toUserId)
+        guard let firstInvite = response.invites.first else {
+            throw APIError.unknown
+        }
+        return firstInvite
     }
     
     func updateInvite(id: String, status: String) async throws -> APIInvite {
         let updateRequest = UpdateInviteRequest(status: status)
         let body = try encoder.encode(updateRequest)
-        return try await request(endpoint: "/invites/\(id)", method: "PATCH", body: body)
+        let response: UpdateInviteResponse = try await request(endpoint: "/invites/\(id)", method: "PATCH", body: body)
+        return response.invite
     }
     
     // MARK: - Booking Endpoints
     
     func getBookings() async throws -> [APIBooking] {
-        try await request(endpoint: "/bookings")
+        let response: GetBookingsResponse = try await request(endpoint: "/bookings")
+        return response.bookings
     }
     
     func createBooking(request: CreateBookingRequest) async throws -> APIBooking {
         let body = try encoder.encode(request)
-        return try await self.request(endpoint: "/bookings", method: "POST", body: body)
+        let response: CreateBookingResponse = try await self.request(endpoint: "/bookings", method: "POST", body: body)
+        return response.booking
     }
 }
 
 // MARK: - Model Converters
 extension APIUser {
     func toUser() -> User {
-        User(
+        // Construct full avatar URL if it's a relative path
+        let fullAvatarUrl: String? = {
+            if avatarUrl.isEmpty {
+                return nil
+            }
+            // If it's already a full URL, return as is
+            if avatarUrl.hasPrefix("http://") || avatarUrl.hasPrefix("https://") {
+                return avatarUrl
+            }
+            // If it's a relative path starting with /, construct full URL
+            if avatarUrl.hasPrefix("/") {
+                return "\(APIConfig.baseURL)\(avatarUrl)"
+            }
+            // Otherwise, assume it's a filename in the media folder
+            return "\(APIConfig.baseURL)/media/\(avatarUrl)"
+        }()
+        
+        return User(
             id: UUID(uuidString: id) ?? UUID(),
             name: name,
             username: name.lowercased(),
             avatarEmoji: avatarForName(name),
+            avatarUrl: fullAvatarUrl,
             isOnline: vibeStatus == .readyToMingle,
             matchScore: matchScoreFromVibe(vibeStatus)
         )

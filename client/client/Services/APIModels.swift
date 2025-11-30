@@ -146,3 +146,36 @@ struct HealthCheckResponse: Codable {
     let timestamp: String
 }
 
+// MARK: - Response Wrapper Types
+struct HeartVenueResponse: Codable {
+    let message: String
+    let interest: APIInterest
+    let venue: APIEnrichedVenue?
+}
+
+struct CreateInviteResponse: Codable {
+    let message: String
+    let invites: [APIInvite]
+}
+
+struct UpdateInviteResponse: Codable {
+    let message: String
+    let invite: APIInvite
+}
+
+struct CreateBookingResponse: Codable {
+    let message: String
+    let booking: APIBooking
+}
+
+struct GetInvitesResponse: Codable {
+    let sent: [APIInvite]
+    let received: [APIInvite]
+    let pending: [APIInvite]
+}
+
+struct GetBookingsResponse: Codable {
+    let bookings: [APIBooking]
+    let count: Int
+}
+

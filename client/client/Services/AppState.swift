@@ -98,8 +98,6 @@ class AppState: ObservableObject {
         } catch {
             print("Error loading current user: \(error)")
             userLoadingState = .error(error)
-            // Fallback to mock user
-            currentUser = MockData.currentUser
         }
     }
     
@@ -109,8 +107,6 @@ class AppState: ObservableObject {
             friends = apiFriends.map { $0.toUser() }
         } catch {
             print("Error loading friends: \(error)")
-            // Fallback to mock friends
-            friends = MockData.allFriends
         }
     }
     
@@ -131,14 +127,6 @@ class AppState: ObservableObject {
         } catch {
             print("Error loading feed: \(error)")
             feedLoadingState = .error(error)
-            // Fallback to mock data
-            feedItems = MockData.feedItems.map { mockItem in
-                FeedItem(
-                    venue: mockItem.venue,
-                    invitation: mockItem.invitation,
-                    apiVenueId: mockItem.venue.name.lowercased().replacingOccurrences(of: " ", with: "-")
-                )
-            }
         }
     }
     
@@ -322,31 +310,5 @@ class AppState: ObservableObject {
         lastError = nil
         showError = false
     }
-}
-
-// MARK: - Mock Data Extension for FeedItem
-extension MockData {
-    struct MockFeedItem: Identifiable {
-        let id: UUID
-        let venue: Venue
-        let invitation: Invitation?
-        
-        var isInvited: Bool { invitation != nil }
-        
-        init(venue: Venue, invitation: Invitation? = nil) {
-            self.id = UUID()
-            self.venue = venue
-            self.invitation = invitation
-        }
-    }
-    
-    static let feedItems: [MockFeedItem] = [
-        MockFeedItem(venue: blueNote, invitation: sampleInvitation),
-        MockFeedItem(venue: rooftop99),
-        MockFeedItem(venue: noirBar),
-        MockFeedItem(venue: omenCoffee),
-        MockFeedItem(venue: velvetLounge),
-        MockFeedItem(venue: sakuraBistro)
-    ]
 }
 
